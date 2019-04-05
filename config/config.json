@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "root",
-    "password": null,
-    "database": "exampledb",
+    "password": "mySQL6830$",
+    "database": "ExtendSim_WebApp",
     "host": "localhost",
     "dialect": "mysql"
   },
