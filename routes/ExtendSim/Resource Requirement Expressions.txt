@@ -1,0 +1,27 @@
+RR_Pool 1_PS1	Quantity	EQ	1	AND	EG_1a
+RR_Pool 1_PS1	Pool	EQ	Pool 1	OR	EG_1a
+RR_Pool 1_PS1	Pool	EQ	Pool 2	OR	EG_1a
+RR_Pool 1_PS1	Pool	EQ	Pool 3		EG_1a
+RR_Pool 2_PS2	Quantity	EQ	1	AND	EG_2
+RR_Pool 2_PS2	Pool	EQ	Pool 2		EG_2
+RR_Pool 3_PS3	Quantity	EQ	1	AND	EG_3a
+RR_Pool 3_PS3	Pool	EQ	Pool 3	OR	EG_3a
+RR_Pool 3_PS3	Pool	EQ	Pool 4		EG_3a
+RR_Pool 4_PS4	Quantity	EQ	1	AND	EG_4a
+RR_Pool 4_PS4	Pool	EQ	Pool 4	OR	EG_4a
+RR_Pool 4_PS4	Pool	EQ	Pool 5		EG_4a
+RR_Pool 5_PS5	Quantity	EQ	1	AND	EG_5
+RR_Pool 5_PS5	Pool	EQ	Pool 5		EG_5
+RR_Pool 1_PS6	Quantity	EQ	1	AND	EG_6a
+RR_Pool 1_PS6	Pool	EQ	Pool 1	OR	EG_6a
+RR_Pool 1_PS6	Pool	EQ	Pool 2		EG_6a
+RR_Pool 2_PS7	Quantity	EQ	1	AND	EG_7
+RR_Pool 2_PS7	Pool	EQ	Pool 2		EG_7
+RR_Pool 3_PS8	Quantity	EQ	1	AND	EG_8a
+RR_Pool 3_PS8	Pool	EQ	Pool 3	OR	EG_8a
+RR_Pool 3_PS8	Pool	EQ	Pool 1		EG_8a
+RR_Pool 4_PS9	Quantity	EQ	1	AND	EG_9a
+RR_Pool 4_PS9	Pool	EQ	Pool 4	OR	EG_9a
+RR_Pool 4_PS9	Pool	EQ	Pool 5		EG_9a
+RR_Pool 5_PS10	Quantity	EQ	1	AND	EG_10
+RR_Pool 5_PS10	Pool	EQ	Pool 5		EG_10
