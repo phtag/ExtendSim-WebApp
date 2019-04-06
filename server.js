@@ -5,8 +5,8 @@ var exphbs = require("express-handlebars");
 var db = require("./models");
 
 var app = express();
-var HOST = process.env.HOST || "127.0.0.1";
-// var HOST = process.env.HOST || "localhost";
+// var HOST = process.env.HOST || "127.0.0.1";
+var HOST = process.env.HOST || "localhost";
 var PORT = process.env.PORT || 3000;
 
 // Middleware

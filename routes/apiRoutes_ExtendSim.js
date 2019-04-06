@@ -12,9 +12,13 @@ var scenarioFilenames = ['Resource Classes.txt',
 
 const c_ExtendSimModelPath = "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP example model (GS).mox"
 
-function ExtendSimASP_login(login_callback, res) {
-    var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer?username=admin&password=model";
+function ExtendSimASP_login(username, password, login_callback, res) {
+
+    
+    // var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer?username=" + username + "&password=" + password;
+    // var queryURL = "http://10.0.20.228:8090/StreamingService/web/LoginToServer?username=" + username + "&password=" + password;
     // var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer";
+    var queryURL = "http://10.0.20.228:8090/StreamingService/web/LoginToServer";
 
     myMethod = "POST"   
     var myheaders = { 
@@ -26,16 +30,16 @@ function ExtendSimASP_login(login_callback, res) {
                   contentType: "application/json;charset=utf-8",
                   headers : myheaders,
                   muteHttpExceptions : false};
-    console.log('ExtendSimASP_login entry...');
+    console.log('ExtendSimASP_login entry. Logging into host ' + queryURL);
     axios({
         url: queryURL,
         method: 'post',
         accept : 'application/json',
         contentType: 'application/json;charset=utf-8',
         headers : myheaders,
-        data: {
-            username: 'admin',
-            password: 'model'
+        params: {
+            username: username,
+            password: password
         }
       }).then(function(response) {
           console.log('ExtendSimASP_login: ' + response.data);
@@ -146,10 +150,11 @@ var db = require("../models");
 module.exports = function(app) {
   // Login
   app.get("/api/login/:username&:password", function(req, res) {
-    console.log("Username=" + req.params.username);
+    console.log("Username=" + req.params.username + " password=" + req.params.password);
+    console.log("Res= " + res);
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    ExtendSimASP_login(ExtendSimASP_createScenarioFolder, res);
+    ExtendSimASP_login(req.params.username, req.params.password, ExtendSimASP_createScenarioFolder, res);
     // db.Example.findAll({}).then(function(dbExamples) {
     //   res.json(dbExamples);
     // });
