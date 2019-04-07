@@ -12,13 +12,11 @@ var scenarioFilenames = ['Resource Classes.txt',
 
 const c_ExtendSimModelPath = "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP example model (GS).mox"
 
-function ExtendSimASP_login(username, password, login_callback, res) {
-
-    
+function ExtendSimASP_login(username, password, login_callback, res) {  
     // var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer?username=" + username + "&password=" + password;
     // var queryURL = "http://10.0.20.228:8090/StreamingService/web/LoginToServer?username=" + username + "&password=" + password;
-    // var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer";
-    var queryURL = "http://10.0.20.228:8090/StreamingService/web/LoginToServer";
+    var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer";
+    // var queryURL = "http://10.0.20.228:8090/StreamingService/web/LoginToServer";
 
     myMethod = "POST"   
     var myheaders = { 
@@ -30,7 +28,7 @@ function ExtendSimASP_login(username, password, login_callback, res) {
                   contentType: "application/json;charset=utf-8",
                   headers : myheaders,
                   muteHttpExceptions : false};
-    console.log('ExtendSimASP_login entry. Logging into host ' + queryURL);
+    console.log('ExtendSimASP_login entry. Logging into host ' + queryURL + " for username=" + username + " password=" + password);
     axios({
         url: queryURL,
         method: 'post',
@@ -44,16 +42,15 @@ function ExtendSimASP_login(username, password, login_callback, res) {
       }).then(function(response) {
           console.log('ExtendSimASP_login: ' + response.data);
           res.json(response.data);
-        //   login_callback(ExtendSimASP_copyModelToScenarioFolder);
     });
 }
 function ExtendSimASP_createScenarioFolder(myScenarioFolder, createScenarioFolder_callback, res) {
     // Execute WCF service to create a scenario folder  
-    var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
+    // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
+    var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder"
     var myheaders = { 
         accept: "application/json", 
     }; 
-    
     var options1 = {method : "GET",
                 accept : "application/json",
                 contentType: "application/json;charset=utf-8",
@@ -68,7 +65,10 @@ function ExtendSimASP_createScenarioFolder(myScenarioFolder, createScenarioFolde
         accept : 'application/json',
         contentType: 'application/json;charset=utf-8',
         headers : myheaders,
-        muteHttpExceptions : false
+        muteHttpExceptions : false,
+        params : {
+            scenarioFoldername : myScenarioFolder
+        }
     }).then(function(response) {
         console.log('ExtendSimASP_createScenarioFolder: ' + response.data);
         scenarioFolderPathname = response.data;
@@ -148,7 +148,8 @@ function ExtendSimASP_sendFile(scenarioFolderPathname, filenames) {
 var db = require("../models");
 
 module.exports = function(app) {
-  // Login
+// ROUTES
+// User login route
   app.get("/api/login/:username&:password", function(req, res) {
     console.log("Username=" + req.params.username + " password=" + req.params.password);
     console.log("Res= " + res);
@@ -160,16 +161,12 @@ module.exports = function(app) {
     // });
   });
 
-  
-
+//  Create scenario folder route
   app.get("/api/createscenariofolder/:scenarioFolderName", function(req, res) {
     console.log("Scenario folder name=" + req.params.scenarioFolderName);
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     ExtendSimASP_createScenarioFolder(req.params.scenarioFolderName, ExtendSimASP_copyModelToScenarioFolder, res);
-    // db.Example.findAll({}).then(function(dbExamples) {
-    //   res.json(dbExamples);
-    // });
   });
 
 

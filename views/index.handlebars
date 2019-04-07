@@ -1,8 +1,11 @@
 <div id="home">
   <div class="container">
     <div class="row">
+      <header id="ExtendSim-header">
+      </header>
+    </div>
+    <div class="row">
       <div class="col-8 offset-2">
-        <h1>{{msg}}</h1>
         <h2>ExtendSim Simulation Scenario Login Page</h2>
         <form class="clearfix mb-4" action="POST">
           <div class="form-group">
@@ -15,9 +18,20 @@
           </div>
           <button id="submit-login-info" class="btn btn-primary float-right">Submit</button>
         </form>
+        <form class="clearfix mb-4" action="POST">
+          <div class="form-group">
+            <label for="example-text">Scenario</label>
+            <input type="text" id="scenario-name-text" class="form-control" aria-describedby="example-text" placeholder="Enter scenario name">
+          </div>          
+          <button id="submit-simulation-scenario" class="btn btn-primary float-right">Submit simulation scenario</button>
+        </form>
         <h3>Results:</h3>
         <label for="scenario-id">Scenario ID:</label>
         <output name="scenario_id" id="scenario-id"></output>
+        <br>
+        <label for="scenario-folder-pathname">Scenario folder path:</label>
+        <output name="scenario_folder_path" id="scenario-folder-pathname"></output>
+
         <ul id="example-list" class="list-group">
           {{#each examples}}
           <li data-id="{{this.id}}" class="list-group-item">

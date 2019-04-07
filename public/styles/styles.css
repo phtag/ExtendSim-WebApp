@@ -1,3 +1,10 @@
 .list-group-item {
   line-height: 2.5;
 }
+#ExtendSim-header {
+  background-image:url(https://extendsim.com/templates/extendsim/images/ES_logo.gif);
+  background-repeat:no-repeat;
+  float:left;
+  height:98px;
+  width:510px;
+}

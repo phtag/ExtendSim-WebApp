@@ -20,7 +20,9 @@ const c_ExtendSimModelPath = "C:/Users/Administrator/Documents/ExtendSim10ASP_Pr
 var $exampleText = $("#example-text");
 var $exampleDescription = $("#example-description");
 var $submitLoginInfoBtn = $("#submit-login-info");
+var $submitSimulationScenarioBtn = $("#submit-simulation-scenario");
 var $exampleList = $("#example-list");
+var $scenarioName = $("#scenario-name-text");
 var $username = $("#username-text");
 var $password = $("#password-text");
 
@@ -59,14 +61,14 @@ function ExtendSimASP_login_AJAX(username, password, login_callback) {
       });
   }
   
-  function ExtendSimASP_createScenarioFolder(createScenarioFolder_callback) {
+  function ExtendSimASP_createScenarioFolder(myScenarioFolderName, createScenarioFolder_callback) {
       // Execute WCF service to create a scenario folder  
       // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
       var queryURL = "http://127.0.0.1:3000/api/createscenariofolder/" + myScenarioFolderName;
       var myheaders = { 
           accept: "application/json", 
       }; 
-      
+
       var options1 = {method : "GET",
                   accept : "application/json",
                   contentType: "application/json;charset=utf-8",
@@ -84,6 +86,7 @@ function ExtendSimASP_login_AJAX(username, password, login_callback) {
       }).then(function(response) {
           console.log('ExtendSimASP_createScenarioFolder: ' + response);
           scenarioFolderPathname = response;
+          $("#scenario-folder-pathname").val(scenarioFolderPathname);
           // createScenarioFolder_callback(response.data, ExtendSimASP_sendFile);
       });
   }
@@ -145,26 +148,16 @@ var refreshExamples = function() {
 
 // handleFormSubmit is called whenever we submit a new example
 // Save the new example to the db and refresh the list
-var handleFormSubmit = function(event) {
+var handleSubmitLoginInfoBtnClick = function(event) {
+  alert('Logging into simulation server');
   event.preventDefault();
-  alert("Submitting login information for username="+ $username.val() + " password=" + $password.val());
   ExtendSimASP_login_AJAX($username.val(), $password.val(), ExtendSimASP_createScenarioFolder);
-  // var example = {
-  //   text: $exampleText.val().trim(),
-  //   description: $exampleDescription.val().trim()
-  // };
+};
 
-  // if (!(example.text && example.description)) {
-  //   alert("You must enter an example text and description!");
-  //   return;
-  // }
-
-  // API.saveExample(example).then(function() {
-  //   refreshExamples();
-  // });
-
-  // $exampleText.val("");
-  // $exampleDescription.val("");
+var handleSubmitSimulationScenarioBtnClick = function(event) {
+  alert('Submitting simulation scenario');
+  event.preventDefault();
+  ExtendSimASP_createScenarioFolder($scenarioName.val(), ExtendSimASP_login_AJAX);
 };
 
 // handleDeleteBtnClick is called when an example's delete button is clicked
@@ -180,5 +173,5 @@ var handleDeleteBtnClick = function() {
 };
 
 // Add event listeners to the submit and delete buttons
-$submitLoginInfoBtn.on("click", handleFormSubmit);
-$exampleList.on("click", ".delete", handleDeleteBtnClick);
+$submitLoginInfoBtn.on("click", handleSubmitLoginInfoBtnClick);
+$submitSimulationScenarioBtn.on("click", handleSubmitSimulationScenarioBtnClick);
