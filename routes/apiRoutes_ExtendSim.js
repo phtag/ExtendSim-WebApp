@@ -58,7 +58,7 @@ function ExtendSimASP_createScenarioFolder(myScenarioFolder, createScenarioFolde
                 muteHttpExceptions : false};
     
     //  var response = UrlFetchApp.fetch(url_createScenarioFolder, options1).getContentText()
-    console.log("Creating scenarion folder for " + myScenarioFolder);
+    console.log("Creating scenario folder for " + myScenarioFolder);
     axios({
         url: queryURL,
         method: 'get',
@@ -72,11 +72,11 @@ function ExtendSimASP_createScenarioFolder(myScenarioFolder, createScenarioFolde
     }).then(function(response) {
         console.log('ExtendSimASP_createScenarioFolder: ' + response.data);
         scenarioFolderPathname = response.data;
+        // createScenarioFolder_callback(modelPathname, scenarioFolderPathname, copyFolderContents, ExtendSimASP_sendFile);
         res.json(scenarioFolderPathname);
-        // createScenarioFolder_callback(response.data, ExtendSimASP_sendFile);
     });
 }
-function ExtendSimASP_copyModelToScenarioFolder(scenarioFolderPathname, copyModelToScenarioFolder_callback) {
+function ExtendSimASP_copyModelToScenarioFolder(modelPathname, scenarioFolderPathname, copyFolderContents, copyModelToScenarioFolder_callback) {
       // Execute WCF service to copy the model folder to the scenario folder 
     var myheaders = { 
         accept: "application/json", 
@@ -86,20 +86,26 @@ function ExtendSimASP_copyModelToScenarioFolder(scenarioFolderPathname, copyMode
         contentType: "application/json;charset=utf-8",
         headers : myheaders,
         muteHttpExceptions : false};
-    var queryURL = "http://184.171.246.58:8090/StreamingService/web/CopyModelToScenarioFolder?modelPathname=" + 
-        encodeURIComponent(c_ExtendSimModelPath) + 
-         "&scenarioFolderpath=" + encodeURIComponent(scenarioFolderPathname) + "&copyFolderContents=True";  
-    // console.log('ExtendSimASP_copyModelToScenarioFolder: url=' + queryURL);
+        var queryURL = "http://184.171.246.58:8090/StreamingService/web/CopyModelToScenarioFolder";
+    // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CopyModelToScenarioFolder?modelPathname=" + 
+    //     encodeURIComponent(c_ExtendSimModelPath) + 
+    //      "&scenarioFolderpath=" + encodeURIComponent(scenarioFolderPathname) + "&copyFolderContents=True";  
+    console.log('ExtendSimASP_copyModelToScenarioFolder: url=' + queryURL + " modelName=" + modelPathname + " scenario pathname=" + scenarioFolderPathname);
     axios({
         url: queryURL,
         method: 'post',
         accept : 'application/json',
         contentType: 'application/json;charset=utf-8',
         headers : myheaders,
-        muteHttpExceptions : false
+        muteHttpExceptions : false,
+        params : {
+            modelPathname : modelPathname,
+            scenarioFolderpath : scenarioFolderPathname,
+            copyFolderContents : copyFolderContents
+        }
     }).then(function(response) {
-        console.log('ExtendSimASP_copyModelToScenarioFolder: ' + response.data);            
-        copyModelToScenarioFolder_callback(scenarioFolderPathname, scenarioFilenames);
+        console.log('ExtendSimASP_copyModelToScenarioFolder: ' + response.data);   
+        // copyModelToScenarioFolder_callback(scenarioFolderPathname, scenarioFilenames);
     });
 
 }
@@ -156,19 +162,33 @@ module.exports = function(app) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     ExtendSimASP_login(req.params.username, req.params.password, ExtendSimASP_createScenarioFolder, res);
-    // db.Example.findAll({}).then(function(dbExamples) {
-    //   res.json(dbExamples);
-    // });
   });
 
 //  Create scenario folder route
-  app.get("/api/createscenariofolder/:scenarioFolderName", function(req, res) {
+app.get("/api/createscenariofolder/:scenarioFolderName", function(req, res) {
     console.log("Scenario folder name=" + req.params.scenarioFolderName);
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     ExtendSimASP_createScenarioFolder(req.params.scenarioFolderName, ExtendSimASP_copyModelToScenarioFolder, res);
-  });
+});
+app.get("/api/copymodeltoscenariofolder/:modelPathname&:scenarioFolderPathname&:copyFolderContents", function(req, res) {
+    console.log("Successfully got to route /api/copymodeltoscenariofolder2s - scenarioFolderPathname=" + req.params.scenarioFolderPathname);
+    ExtendSimASP_copyModelToScenarioFolder(req.params.modelPathname, req.params.scenarioFolderPathname, req.params.copyFolderContents, ExtendSimASP_sendFile);
+    res.json(req.params.modelPathname);
+});
+app.get("/api/copymodeltoscenariofolder2/:modelPathname&:scenarioFolderPathname&:copyFolderContents", function(req, res) {
+    console.log("Successfully got to route /api/copymodeltoscenariofolder2");
+    // ExtendSimASP_copyModelToScenarioFolder(res.params.modelPathname, req.params.scenarioFolderPathname, req.params.copyFolderContents, ExtendSimASP_sendFile);
+    res.json(req.params.scenarioFolderPathname);
+});
 
+//  Create scenario folder route
+app.post("/api/copymodeltoscenariofolder/:modelPathname&:scenarioFolderPathname&:copyFolderContents", function(req, res) {
+    console.log("Scenario folder name=" + req.params.scenarioFolderPathname);
+    // res.header("Access-Control-Allow-Origin", "*");
+    // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    ExtendSimASP_copyModelToScenarioFolder(req.params.modelPathname, req.params.scenarioFolderPathname, req.params.copyFolderContents, ExtendSimASP_sendFile);
+});
 
   // Create a new example
   app.post("/api/examples", function(req, res) {

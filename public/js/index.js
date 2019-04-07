@@ -43,6 +43,7 @@ function ExtendSimASP_login_AJAX(username, password, login_callback) {
                     contentType: "application/json;charset=utf-8",
                     headers : myheaders,
                     muteHttpExceptions : false};
+      alert("Login...");
       $.ajax({
           url: targetUrl,
           method: 'get',
@@ -65,17 +66,6 @@ function ExtendSimASP_login_AJAX(username, password, login_callback) {
       // Execute WCF service to create a scenario folder  
       // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
       var queryURL = "http://127.0.0.1:3000/api/createscenariofolder/" + myScenarioFolderName;
-      var myheaders = { 
-          accept: "application/json", 
-      }; 
-
-      var options1 = {method : "GET",
-                  accept : "application/json",
-                  contentType: "application/json;charset=utf-8",
-                  headers : myheaders,
-                  muteHttpExceptions : false};
-      
-      //  var response = UrlFetchApp.fetch(url_createScenarioFolder, options1).getContentText()
       $.ajax({
           url: queryURL,
           method: 'get',
@@ -87,9 +77,108 @@ function ExtendSimASP_login_AJAX(username, password, login_callback) {
           console.log('ExtendSimASP_createScenarioFolder: ' + response);
           scenarioFolderPathname = response;
           $("#scenario-folder-pathname").val(scenarioFolderPathname);
-          // createScenarioFolder_callback(response.data, ExtendSimASP_sendFile);
+          ExtendSimASP_copyModelToScenarioFolder(scenarioFolderPathname);
       });
   }
+
+  function ExtendSimASP_copyModelToScenarioFolder(scenarioFolderPathname) {
+    // Execute WCF service to create a scenario folder  
+    // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
+    var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder/" + encodeURIComponent(c_ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
+    // var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder2";
+    alert("ExtendSimASP_copyModelToScenarioFolder making request to server");
+    $.ajax({
+        url: queryURL,
+        method: 'get',
+        accept : 'application/json',
+        contentType: 'application/json;charset=utf-8',
+        headers : myheaders,
+        muteHttpExceptions : false,
+        // data : {
+        //   modelPathname : "big trapper",
+        //   scenarioFolderPathname : encodeURIComponent(scenarioFolderPathname),
+        //   copyFolderContents : true
+        // }
+    }).then(function(response) {
+        console.log('ExtendSimASP_copyModelToScenarioFolder: ' + response);
+        // scenarioFolderPathname = response;
+        // $("#scenario-folder-pathname").val(scenarioFolderPathname);
+        // ExtendSimASP_copyModelToScenarioFolder(scenarioFolderPathname);
+    });
+}
+
+//   function ExtendSimASP_copyModelToScenarioFolder(scenarioFolderPathname) {
+//     console.log('ExtendSimASP_copyModelToScenarioFolder entry...');
+//     var myheaders = { 
+//       accept: "application/json", 
+//     }; 
+//     var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder2/" + c_ExtendSimModelPath + "&" + scenarioFolderPathname + "&" + true;
+
+//     // var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder/" + c_ExtendSimModelPath + "&" + scenarioFolderPathname + "&true";
+//       // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CopyModelToScenarioFolder";
+//       // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CopyModelToScenarioFolder?modelPathname=" + 
+//       // encodeURIComponent(c_ExtendSimModelPath) + 
+//       //  "&scenarioFolderpath=" + encodeURIComponent(scenarioFolderPathname) + "&copyFolderContents=True";  
+//   // console.log('ExtendSimASP_copyModelToScenarioFolder: url=' + queryURL);
+//   alert("copymodeltoscenariofolder...");
+//   $.ajax({
+//       url: queryURL,
+//       method: 'get',
+//       accept : 'application/json',
+//       contentType: 'application/json;charset=utf-8',
+//       headers : myheaders,
+//       muteHttpExceptions : false,
+//       // params : {
+//       //   modelPathname : c_ExtendSimModelPath,
+//       //   scenarioFolderPathname : scenarioFolderPathname,
+//       //   copyFolderContents : true
+//       // }
+//   }).then(function(response) {
+//       console.log('ExtendSimASP_copyModelToScenarioFolder: ' + response.data);            
+//       // copyModelToScenarioFolder_callback(scenarioFolderPathname, scenarioFilenames);
+//   });
+// };
+//   function ExtendSimASP_sendFile(scenarioFolderPathname, filenames) {
+//     filenames.forEach(function(filename) {
+//         fs.readFile(filename, 'utf8', function(error, result) {
+//             if (error) {
+//                 console.log('Error' + error);
+//             }
+//             console.log('Result=' + result);
+//             var myheaders = { 
+//                 accept: "application/json", 
+//             };  
+//             var queryURL = "http://127.0.0.1:3000/api/sendfiledata/";
+//             // var queryURL =  "http://184.171.246.58:8090/StreamingService/web/UploadPathname?filepathname=" + encodeURIComponent(scenarioFolderPathname + "/" + filename);
+//             axios({
+//                 url: queryURL,
+//                 method: 'post',
+//                 accept : "application/json",
+//                 contentType: "application/json;charset=utf-8",
+//                 headers : myheaders,
+//                 muteHttpExceptions : false
+//             }).then(function(response) {
+//                 console.log('Uploaded pathname...');
+//                 var queryURL =  "http://184.171.246.58:8090/StreamingService/web/UploadStream"
+//                 axios({
+//                 url: queryURL,
+//                 method: 'post',
+//                 accept : 'application/json',
+//                 //    contentType: 'application/json;charset=utf-8',
+//                 contentType: 'multipart/form-data',
+//                 headers : myheaders,
+//                 data: result,
+//                 //    payload : result,
+//                 muteHttpExceptions : false
+//             }).then(function(response) {
+//                 console.log('ExtendSimASP_sendFile: ' + response.data);
+//           });   
+//         }); 
+//       })
+//     });
+// }
+// }
+
 
 // The API object contains methods for each kind of request we'll make
 var API = {
@@ -149,15 +238,14 @@ var refreshExamples = function() {
 // handleFormSubmit is called whenever we submit a new example
 // Save the new example to the db and refresh the list
 var handleSubmitLoginInfoBtnClick = function(event) {
-  alert('Logging into simulation server');
   event.preventDefault();
+  alert("Here we go!");
   ExtendSimASP_login_AJAX($username.val(), $password.val(), ExtendSimASP_createScenarioFolder);
 };
 
 var handleSubmitSimulationScenarioBtnClick = function(event) {
-  alert('Submitting simulation scenario');
   event.preventDefault();
-  ExtendSimASP_createScenarioFolder($scenarioName.val(), ExtendSimASP_login_AJAX);
+  ExtendSimASP_createScenarioFolder($scenarioName.val(), ExtendSimASP_copyModelToScenarioFolder);
 };
 
 // handleDeleteBtnClick is called when an example's delete button is clicked
