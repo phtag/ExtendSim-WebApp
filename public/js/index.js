@@ -2,9 +2,9 @@ var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
 var scenarioFolderPathname;
 var myheaders = { 
     accept: "application/json", 
-    crossDomain: true,
-    dataType: 'jsonp',
-    Methods: "GET, POST, PUT"
+    // crossDomain: true,
+    // dataType: 'jsonp',
+    Methods: "GET, POST, PUT, DELETE"
 };
 var myScenarioFolderName = "myProject2_scenario";
 var scenarioFilenames = ['Resource Classes.txt',
@@ -13,7 +13,8 @@ var scenarioFilenames = ['Resource Classes.txt',
                          'Process Route.txt',
                          'Resource Requirement Expressions.txt',
                          'Resources.txt'];
-var output = [];
+var scenarioInputFiles = [];
+var uploadedInputFiles = [];
 const c_ExtendSimModelPath = "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP example model (GS).mox"
 
 // Get references to page elements
@@ -25,7 +26,7 @@ var $exampleList = $("#example-list");
 var $scenarioName = $("#scenario-name-text");
 var $username = $("#username-text");
 var $password = $("#password-text");
-
+var $dropArea = $("#drop-area");
 //  ExtendSim API functions
 function ExtendSimASP_login_AJAX(username, password, login_callback) {
   // $.get(proxyUrl + targetUrl, function(data) {
@@ -84,21 +85,21 @@ function ExtendSimASP_login_AJAX(username, password, login_callback) {
   function ExtendSimASP_copyModelToScenarioFolder(scenarioFolderPathname) {
     // Execute WCF service to create a scenario folder  
     // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
-    var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder/" + encodeURIComponent(c_ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
-    // var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder2";
-    alert("ExtendSimASP_copyModelToScenarioFolder making request to server");
+    // var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder/" + encodeURIComponent(c_ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
+    var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder";
+    alert("ExtendSimASP_copyModelToScenarioFolder making request to server w/o encodingURI!");
     $.ajax({
         url: queryURL,
         method: 'get',
-        accept : 'application/json',
+        // accept : 'application/json',
         contentType: 'application/json;charset=utf-8',
         headers : myheaders,
         muteHttpExceptions : false,
-        // data : {
-        //   modelPathname : "big trapper",
-        //   scenarioFolderPathname : encodeURIComponent(scenarioFolderPathname),
-        //   copyFolderContents : true
-        // }
+        data : {
+          modelPathname : c_ExtendSimModelPath,
+          scenarioFolderPathname : scenarioFolderPathname,
+          copyFolderContents : true
+        }
     }).then(function(response) {
         console.log('ExtendSimASP_copyModelToScenarioFolder: ' + response);
         // scenarioFolderPathname = response;
@@ -250,16 +251,79 @@ var handleSubmitSimulationScenarioBtnClick = function(event) {
 
 // handleDeleteBtnClick is called when an example's delete button is clicked
 // Remove the example from the db and refresh the list
-var handleDeleteBtnClick = function() {
-  var idToDelete = $(this)
-    .parent()
-    .attr("data-id");
-
-  API.deleteExample(idToDelete).then(function() {
-    refreshExamples();
-  });
+var handlerDragEnterEvent = function(event) {
+  event.preventDefault();
 };
+var handlerDragLeaveEvent = function(event) {
+  event.preventDefault();
 
-// Add event listeners to the submit and delete buttons
+};
+var handlerDragOverEvent = function(event) {
+  event.preventDefault();
+};
+var handleFileDropEvent = function(event) {
+  event.preventDefault();
+  alert(event.dataTransfer.files[0]);
+};
+//________________________________________
+// Add event listeners
+//  Buttons
 $submitLoginInfoBtn.on("click", handleSubmitLoginInfoBtnClick);
 $submitSimulationScenarioBtn.on("click", handleSubmitSimulationScenarioBtnClick);
+// Drop area
+// $dropArea.on('dragenter', handlerDragEnterEvent);
+// $dropArea.on('dragleave', handlerDragLeaveEvent);
+// $dropArea.on('dragover', handlerDragOverEvent);
+// $dropArea.on('drop', handleFileDropEvent);
+
+// $('#dropArea').on({
+  $(document).on('dragover', '#drop-area', function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+  });
+  $(document).on('dragenter', '#drop-area', function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+  });
+  $(document).on('drop', '#drop-area', function(event) {
+    event.preventDefault();
+    var dataTransfer = event.originalEvent.dataTransfer;
+    var files =  event.originalEvent.dataTransfer.files;
+    alert("You just uploaded " + files.length + " files");
+    for (var i = 0; i < files.length; i++) {
+      console.log("Filename=" + files[i].name + " size=" + files[i].size);
+    }
+    if(dataTransfer && files.length) {
+        event.preventDefault();
+        event.stopPropagation();
+        for (var i = 0; i < files.length; i++) {
+          scenarioInputFiles.push('<li><strong>', 
+                                  // escape(decodeURI(files[i].name)), 
+                                  decodeURI(files[i].name), 
+                                  '</strong> (', files[i].type || 'n/a', ') - ',
+                                  files[i].size, ' bytes, last modified: ',
+                                  files[i].lastModifiedDate ? files[i].lastModifiedDate.toLocaleDateString() : 'n/a',
+                                  '</li>');
+        }
+        var $scenarioInputFiles = $("#scenario-input-files-list");
+        $scenarioInputFiles.html('<ul>' + scenarioInputFiles.join('') + '</ul>');
+
+        for (var i = 0; i < dataTransfer.items.length; i++) {
+          if (dataTransfer.items[i].kind === 'file') {
+            uploadedInputFiles.push(dataTransfer.items[i].getAsFile());
+            console.log(uploadedInputFiles[i]);
+          }
+        }
+        //   // Read in the image file as a data URL.
+        // reader.readAsText(document.querySelector('input').files[0]);
+        // console.log(reader);
+        // alert('Done reading');
+    
+        // fileInput = document.querySelector('input[type="file"]');
+        // console.log(fileInput.files.length);
+        // for (i=0;i<fileInput.files.length;i++) {
+        //     read(fileInput.files.item(i), readTextFile);
+        // }
+      }
+  });
+

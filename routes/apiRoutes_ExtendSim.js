@@ -171,23 +171,29 @@ app.get("/api/createscenariofolder/:scenarioFolderName", function(req, res) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     ExtendSimASP_createScenarioFolder(req.params.scenarioFolderName, ExtendSimASP_copyModelToScenarioFolder, res);
 });
-app.get("/api/copymodeltoscenariofolder/:modelPathname&:scenarioFolderPathname&:copyFolderContents", function(req, res) {
-    console.log("Successfully got to route /api/copymodeltoscenariofolder2s - scenarioFolderPathname=" + req.params.scenarioFolderPathname);
-    ExtendSimASP_copyModelToScenarioFolder(req.params.modelPathname, req.params.scenarioFolderPathname, req.params.copyFolderContents, ExtendSimASP_sendFile);
-    res.json(req.params.modelPathname);
+// app.get("/api/copymodeltoscenariofolder/:modelPathname&:scenarioFolderPathname&:copyFolderContents", function(req, res) {
+// app.get("/api/copymodeltoscenariofolder/modelPathname=:modelPathname&:scenarioFolderPathname=scenarioFolderPathname&copyFolderContents=:copyFolderContents", function(req, res) {
+app.get("/api/copymodeltoscenariofolder", function(req, res) {
+        console.log("Successfully got to route /api/copymodeltoscenariofolder - req.query.modelPathname =" + req.query.modelPathname);
+    ExtendSimASP_copyModelToScenarioFolder(req.query.modelPathname, req.query.scenarioFolderPathname, req.query.copyFolderContents, ExtendSimASP_sendFile);
+    res.json(req.query.modelPathname);
 });
-app.get("/api/copymodeltoscenariofolder2/:modelPathname&:scenarioFolderPathname&:copyFolderContents", function(req, res) {
+app.get("/api/copymodeltoscenariofolder2/modelPathname=:modelPathname&:scenarioFolderPathname=scenarioFolderPathname&copyFolderContents=:copyFolderContents", function(req, res) {
     console.log("Successfully got to route /api/copymodeltoscenariofolder2");
     // ExtendSimASP_copyModelToScenarioFolder(res.params.modelPathname, req.params.scenarioFolderPathname, req.params.copyFolderContents, ExtendSimASP_sendFile);
     res.json(req.params.scenarioFolderPathname);
 });
 
 //  Create scenario folder route
-app.post("/api/copymodeltoscenariofolder/:modelPathname&:scenarioFolderPathname&:copyFolderContents", function(req, res) {
-    console.log("Scenario folder name=" + req.params.scenarioFolderPathname);
-    // res.header("Access-Control-Allow-Origin", "*");
-    // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    ExtendSimASP_copyModelToScenarioFolder(req.params.modelPathname, req.params.scenarioFolderPathname, req.params.copyFolderContents, ExtendSimASP_sendFile);
+app.post("/api/copymodeltoscenariofolder", function(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
+    res.setHeader('Access-Control-Allow-Credentials', true); // If needed
+
+    console.log("Successfully got to POST route /api/copymodeltoscenariofolder - req.query.modelPathname =" + req.query.modelPathname);
+// ExtendSimASP_copyModelToScenarioFolder(req.params.modelPathname, req.params.scenarioFolderPathname, req.params.copyFolderContents, ExtendSimASP_sendFile);
+res.json(req.query.modelPathname);
 });
 
   // Create a new example

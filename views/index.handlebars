@@ -25,13 +25,16 @@
           </div>          
           <button id="submit-simulation-scenario" class="btn btn-primary float-right">Submit simulation scenario</button>
         </form>
-        <h3>Results:</h3>
+        <h3>Scenario Information:</h3>
         <label for="scenario-id">Scenario ID:</label>
         <output name="scenario_id" id="scenario-id"></output>
         <br>
         <label for="scenario-folder-pathname">Scenario folder path:</label>
         <output name="scenario_folder_path" id="scenario-folder-pathname"></output>
-
+        <input type="file" id="scenario-input-files" name="files[]" multiple />
+        <output id="scenario-input-files-list"></output>
+        <div id="drop-area">
+        </div>
         <ul id="example-list" class="list-group">
           {{#each examples}}
           <li data-id="{{this.id}}" class="list-group-item">
