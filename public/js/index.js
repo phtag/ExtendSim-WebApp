@@ -115,7 +115,7 @@ function sendFile(scenarioFolderPathname, files, fileIndex) {
     event.preventDefault();
     // Here you can use `e.target.result` or `this.result`
     // and `f.name`.
-    console.log("Reader result=" + event.result);
+    console.log("Reader result=" + reader.result);
     alert("Sending file = " + filename);
     $.ajax({
       url: queryNameURL,
@@ -128,7 +128,8 @@ function sendFile(scenarioFolderPathname, files, fileIndex) {
       muteHttpExceptions: false,
       data: {
         scenarioFolderPathname: scenarioFolderPathname,
-        filename: filename
+        filename: filename,
+        filedata: reader.result
       }
     }).then(function(response) {
       console.log("Response=" + response);

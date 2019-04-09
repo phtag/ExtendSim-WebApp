@@ -185,8 +185,8 @@ app.get("/api/copymodeltoscenariofolder2/modelPathname=:modelPathname&:scenarioF
 });
 
 app.get("/api/sendfilename", function(req, res) {
-    console.log("Route /api/sendfilesdata: req.query=" + req.query.filename);
-    res.json(req.query.filename);
+    console.log("Route /api/sendfilesdata: req.query.filedata=" + req.query.filedata);
+    res.json(req.query.filedata);
 });
 app.get("/api/sendfiledata", function(req, res) {
     console.log("Route /api/sendfilesdata: req.query=" + req.body);
