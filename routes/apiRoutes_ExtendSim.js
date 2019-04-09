@@ -184,6 +184,11 @@ app.get("/api/copymodeltoscenariofolder2/modelPathname=:modelPathname&:scenarioF
     res.json(req.params.scenarioFolderPathname);
 });
 
+app.get("/api/sendfilesdata", function(req, res) {
+    console.log("Route /api/sendfilesdata: req.query=" + req.query);
+    res.json(req.query);
+});
+
 //  Create scenario folder route
 app.post("/api/copymodeltoscenariofolder", function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
