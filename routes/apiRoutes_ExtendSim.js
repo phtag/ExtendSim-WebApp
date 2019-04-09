@@ -184,9 +184,13 @@ app.get("/api/copymodeltoscenariofolder2/modelPathname=:modelPathname&:scenarioF
     res.json(req.params.scenarioFolderPathname);
 });
 
-app.get("/api/sendfilesdata", function(req, res) {
-    console.log("Route /api/sendfilesdata: req.query=" + req.query);
-    res.json(req.query);
+app.get("/api/sendfilename", function(req, res) {
+    console.log("Route /api/sendfilesdata: req.query=" + req.query.filename);
+    res.json(req.query.filename);
+});
+app.get("/api/sendfiledata", function(req, res) {
+    console.log("Route /api/sendfilesdata: req.query=" + req.body);
+    res.json(req.body);
 });
 
 //  Create scenario folder route

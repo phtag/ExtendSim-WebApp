@@ -107,30 +107,43 @@ function ExtendSimASPcopyModelToScenarioFolder(scenarioFolderPathname) {
     ExtendSimASPsendFiles(scenarioFolderPathname, AJAXscenarioInputfiles);
   });
 }
+function sendFile(fileIndex) {
 
+}
 function ExtendSimASPsendFiles(scenarioFolderPathname, files) {
-  var queryURL = "http://127.0.0.1:3000/api/sendfilesdata/";
+  var queryNameURL = "http://127.0.0.1:3000/api/sendfilename/";
+  // var queryDataURL = "http://127.0.0.1:3000/api/sendfiledata/";
   alert("Reading  " + files.length + " files");
 
   for (var i = 0; i < files.length; i++) {
     var reader = new FileReader();
-    reader.onload = function() {
-      console.log("Reader result=" + reader.result);
-      alert("ExtendSimASPsendFiles: sending data to server");
-      $.ajax({
-        url: queryURL,
-        method: "get",
-        accept: "application/json",
-        contentType: "multipart/form-data",
-        headers: myheaders,
-        data: reader.result,
-        muteHttpExceptions: false
-      }).then(function(response) {
-        console.log("Response=" + response);
-      });
-    };
-    reader.readAsBinaryString(files[i]);
-    alert("sending file=" + files[i].name);
+    reader.onload = (function(thisFile) {
+      return function(e) {
+        // Here you can use `e.target.result` or `this.result`
+        // and `f.name`.
+        var filename = thisFile.name;
+        console.log("Reader result=" + e.result);
+        alert("Sending file = " + filename);
+        $.ajax({
+          url: queryNameURL,
+          method: "get",
+          accept: "application/json",
+          // contentType: "multipart/form-data",
+          contentType: "application/json;charset=utf-8",
+          headers: myheaders,
+          data: reader.result,
+          muteHttpExceptions: false,
+          data: {
+            scenarioFolderPathname: scenarioFolderPathname,
+            filename: filename
+          }
+        }).then(function(response) {
+          console.log("Response=" + response);
+        });
+      };
+    })(file);
+    var file = files[i];
+    reader.readAsBinaryString(file);
   }
   // var myheaders = {
   //   accept: "application/json",
