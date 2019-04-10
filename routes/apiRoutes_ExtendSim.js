@@ -2,8 +2,8 @@
 var axios = require("axios");
 var fs = require("fs");
 
-// var IPaddress = "184.171.246.58";
-var IPaddress = "10.0.20.228";
+var IPaddress = "184.171.246.58";
+// var IPaddress = "10.0.20.228";
 var scenarioFolderPathname;
 var scenarioFilenames = ['Resource Classes.txt',
                          'Model Parameters.txt',
@@ -142,14 +142,7 @@ function ExtendSimASP_sendFile(scenarioFolderPathname, filename, filedata) {
 }
 
 // Execute WCF service to submit the simulation scenario
-function ExtendSimsubmitScenario(userLoginSessionID, modelPathname, removeFolderOnCompletion) {
-    // var options5 = {
-    //     method : "POST",
-    //     accept : "application/json",
-    //     contentType: "application/octet-stream",
-    //     headers : myheaders,
-    //     muteHttpExceptions : false
-    // };
+function ExtendSimSubmitScenario(userLoginSessionID, modelPathname, removeFolderOnCompletion) {
     var myheaders = { 
         accept: "application/json", 
     };     
@@ -169,10 +162,40 @@ function ExtendSimsubmitScenario(userLoginSessionID, modelPathname, removeFolder
             removeScenarioFolderOnCompletion: removeFolderOnCompletion
         }
     }).then(function(response) {
-
+        // ExtendSimCheckModelRunStatus(userLoginSessionID);
+        console.log("ExtendSimSubmitScenario: response.data=" + response.data);
+        return response.data;
     });
 }
-// ExtendSimASP_login(ExtendSimASP_createScenarioFolder);
+function ExtendSimCheckModelRunStatus(scenarioID) {
+    var myheaders = { 
+        accept: "application/json", 
+    };
+    var queryURL = "http://" + IPaddress + ":8080/ExtendSimService/web/CheckModelRunStatus";
+//     while (runStatus < 3) {
+//       //Browser.msgBox("Run status=" + runStatus);
+//       Utilities.sleep(1000)
+//      runStatus = UrlFetchApp.fetch(url_checkModelRunStatus, options6).getContentText();
+//    }
+    console.log("ExtendSimCheckModelRunStatus: Making call to server...");
+    return axios({
+        url: queryURL,
+        method: 'get',
+        accept : "application/json",
+        contentType: "application/json;charset=utf-8",
+        headers : myheaders,
+        muteHttpExceptions : false,
+        params: 
+        {
+            scenario_ID: scenarioID
+        }
+    }).then(function(response) {
+        var modelRunStatus = response.data;
+        console.log("ExtendSimCheckModelRunStatus: Model run status=" + modelRunStatus);
+        return modelRunStatus;
+        // ExtendSimCheckModelRunStatus(userLoginSessionID);
+    });
+}
 
 var db = require("../models");
 module.exports = function(app) {
@@ -211,7 +234,6 @@ app.get("/api/sendfilename", function(req, res) {
     .then(function(result) {
         res.json(req.query.filedata);
     });
-
 });
 app.get("/api/sendfiledata", function(req, res) {
     console.log("Route /api/sendfilesdata: req.query=" + req.body);
@@ -219,13 +241,18 @@ app.get("/api/sendfiledata", function(req, res) {
 });
 app.get("/api/submitsimulationscenario", function(req, res) {
     console.log("Route /api/submitsimulationscenario: userLoginSessionID=" + req.query.userLoginSessionID);
-    ExtendSimsubmitScenario(req.query.userLoginSessionID, req.query.modelPathname, req.query.removeFolderOnCompletion)
-    .then(function(result) {
-        res.json(req.query.userLoginSessionID);
+    ExtendSimSubmitScenario(req.query.userLoginSessionID, req.query.modelPathname, req.query.removeFolderOnCompletion)
+    .then(function(scenarioID) {
+        res.json(scenarioID);
     });
 });
-
-
+app.get("/api/checkmodelrunstatus", function(req, res) {
+    console.log("Route /api/checkmodelrunstatus: userLoginSessionID=" + req.query.scenarioID);
+    ExtendSimCheckModelRunStatus(req.query.scenarioID)
+    .then(function(modelRunStatus) {
+        res.json(modelRunStatus);
+    });
+});   
 //  Create scenario folder route
 app.post("/api/copymodeltoscenariofolder", function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -238,18 +265,6 @@ app.post("/api/copymodeltoscenariofolder", function(req, res) {
     res.json(req.query.modelPathname);
 });
 
-  // Create a new example
-  app.post("/api/examples", function(req, res) {
-    db.Example.create(req.body).then(function(dbExample) {
-      res.json(dbExample);
-    });
-  });
 
-  // Delete an example by id
-  app.delete("/api/examples/:id", function(req, res) {
-    db.Example.destroy({ where: { id: req.params.id } }).then(function(dbExample) {
-      res.json(dbExample);
-    });
-  });
 };
 

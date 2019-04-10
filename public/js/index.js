@@ -15,20 +15,29 @@ var myScenarioFolderName = "myProject2_scenario";
 var scenarioInputFiles = [];
 var AJAXscenarioInputfiles = [];
 var ExtendSimModelName = "/ASP example model (GS).mox";
-var ExtendSimModelPath =
-  "C:/Users/peter/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP v10 models" +
-  ExtendSimModelName;
+
+//  localhost
 // var ExtendSimModelPath =
-//   "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models" +
+//   "C:/Users/peter/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP v10 models" +
 //   ExtendSimModelName;
+
+// ExtendSim server
+var ExtendSimModelPath =
+  "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models" +
+  ExtendSimModelName;
 // Get references to page elements
 var $submitLoginInfoBtn = $("#submit-login-info");
 var $submitSimulationScenarioBtn = $("#submit-simulation-scenario");
+var $checkScenarioStatusBtn = $("#check-scenario-status");
 var $scenarioName = $("#scenario-name-text");
+var $userloginSessionID = $("#user-login-id");
 var $scenarioID = $("#scenario-id");
 var $scenarioFolderPathname = $("#scenario-folder-pathname");
 var $username = $("#username-text");
 var $password = $("#password-text");
+
+var checkModelStatusTimer;
+var runCompletedScenarioStatus = 3;
 // var $dropArea = $("#drop-area");
 //  ExtendSim API functions
 function ExtendSimASPloginAJAX(username, password, login_callback) {
@@ -49,12 +58,12 @@ function ExtendSimASPloginAJAX(username, password, login_callback) {
     contentType: "application/json;charset=utf-8",
     headers: myheaders
   }).then(function(response) {
-    var scenarioID = response;
-    if (scenarioID === "") {
+    var userLoginID = response;
+    if (userLoginID === "") {
       console.log("ERROR: ExtendSimASPloginAJAX");
     } else {
-      $("#scenario-id").val(scenarioID);
-      console.log("ExtendSimASPloginAJAX: " + scenarioID);
+      $userloginSessionID.val(userLoginID);
+      console.log("ExtendSimASPloginAJAX: " + userLoginID);
       // login_callback(ExtendSimASPcopyModelToScenarioFolder);
     }
   });
@@ -111,7 +120,7 @@ function sendFile(scenarioFolderPathname, files, fileIndex) {
     // Here you can use `e.target.result` or `this.result`
     // and `f.name`.
     console.log("Reader result=" + reader.result);
-    alert("Sending file = " + filename);
+    // alert("Sending file = " + filename);
     $.ajax({
       url: queryNameURL,
       method: "get",
@@ -133,7 +142,7 @@ function sendFile(scenarioFolderPathname, files, fileIndex) {
         sendFile(scenarioFolderPathname, files, fileIndex++);
       } else {
         ExtendSimASPsubmitSimulationScenario(
-          $scenarioID.val(),
+          $userloginSessionID.val(),
           $scenarioFolderPathname.val() + ExtendSimModelName,
           true
         );
@@ -145,9 +154,9 @@ function sendFile(scenarioFolderPathname, files, fileIndex) {
 
 function ExtendSimASPsendFiles(scenarioFolderPathname, files) {
   // var queryDataURL = "http://127.0.0.1:3000/api/sendfiledata/";
-  alert("Reading  " + files.length + " files");
+  // alert("Reading  " + files.length + " files");
   if (files.length) {
-    sendFile(scenarioFolderPathname, files, 0);
+    sendFile(scenarioFolderPathname, files, 0)
   }
 }
 
@@ -178,9 +187,38 @@ function ExtendSimASPsubmitSimulationScenario(
     }
   }).then(function(response) {
     console.log("ExtendSimASPsubmitSimulationScenario: " + response);
+    var scenarioID = response;
+    $scenarioID.val(scenarioID);
+    alert("Setting interval for checking model run status");
+    checkModelStatusTimer = setInterval(ExtendSimASPCheckModelRunStatus, 1000);
+    // ExtendSimASPCheckModelRunStatus().then(function(result) {
+    //   console.log("Status=" + result);
+    // });
   });
 }
 
+function ExtendSimASPCheckModelRunStatus() {
+  var queryURL = "http://127.0.0.1:3000/api/checkmodelrunstatus";
+  alert("ExtendSimASPCheckModelRunStatus: Entry");
+  $.ajax({
+    url: queryURL,
+    method: "get",
+    // accept : 'application/json',
+    contentType: "application/json;charset=utf-8",
+    headers: myheaders,
+    muteHttpExceptions: false,
+    data: {
+      scenarioID: $scenarioID.val()
+    }
+  }).then(function(response) {
+    console.log("ExtendSimCheckModelRunStatus: status=" + response);
+    if (response === runCompletedScenarioStatus) {
+      clearInterval(checkModelStatusTimer);
+      // ExtendSimASPCheckModelRunStatus(scenarioID);
+    }
+    return response;
+  });
+}
 // }
 //  Respond to user clicking button to submit the simulation scenarion they have created
 var handleSubmitLoginInfoBtnClick = function(event) {
@@ -196,6 +234,11 @@ var handleSubmitSimulationScenarioBtnClick = function(event) {
   event.preventDefault();
   ExtendSimASPcreateScenarioFolder($scenarioName.val());
 };
+
+var handleCheckScenarioBtnClick = function(event) {
+  event.preventDefault();
+  ExtendSimASPCheckModelRunStatus($scenarioID.val());
+};
 //________________________________________
 // Add event listeners
 //  Buttons
@@ -204,6 +247,7 @@ $submitSimulationScenarioBtn.on(
   "click",
   handleSubmitSimulationScenarioBtnClick
 );
+$checkScenarioStatusBtn.on("click", handleCheckScenarioBtnClick);
 // Drop area events
 $(document).on("dragover", "#drop-area", function(event) {
   event.preventDefault();
@@ -219,7 +263,7 @@ $(document).on("drop", "#drop-area", function(event) {
   //  Save the list of files for pushing to the server when the user submits the simulation scenario
   AJAXscenarioInputfiles = event.originalEvent.dataTransfer.files;
 
-  alert("You just uploaded " + AJAXscenarioInputfiles.length + " files");
+  // alert("You just uploaded " + AJAXscenarioInputfiles.length + " files");
   for (var i = 0; i < AJAXscenarioInputfiles.length; i++) {
     console.log(
       "Filename=" +

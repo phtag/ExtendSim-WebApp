@@ -16,16 +16,20 @@
             <label for="password-text">Password</label>
             <input type="password" id="password-text" class="form-control" aria-describedby="password-text"></textarea>
           </div>
-          <button id="submit-login-info" class="btn btn-primary float-right">Submit</button>
+          <button id="submit-login-info" class="btn btn-primary float-left">Submit</button>
         </form>
         <form class="clearfix mb-4" action="POST">
           <div class="form-group">
             <label for="example-text">Scenario</label>
             <input type="text" id="scenario-name-text" class="form-control" aria-describedby="example-text" placeholder="Enter scenario name">
           </div>          
-          <button id="submit-simulation-scenario" class="btn btn-primary float-right">Submit simulation scenario</button>
-        </form>
+          <button id="submit-simulation-scenario" class="btn btn-primary float-left">Submit simulation scenario</button>
+          <button id="check-scenario-status" class="btn btn-primary float-right">Check scenario status</button>
+       </form>
         <h3>Scenario Information:</h3>
+        <label for="user-login-id">User Login ID:</label>
+        <output name="userLoginID" id="user-login-id"></output>
+        <br>
         <label for="scenario-id">Scenario ID:</label>
         <output name="scenario_id" id="scenario-id"></output>
         <br>
