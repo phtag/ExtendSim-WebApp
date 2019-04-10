@@ -2,6 +2,8 @@
 var axios = require("axios");
 var fs = require("fs");
 
+// var IPaddress = "184.171.246.58";
+var IPaddress = "10.0.20.228";
 var scenarioFolderPathname;
 var scenarioFilenames = ['Resource Classes.txt',
                          'Model Parameters.txt',
@@ -13,9 +15,9 @@ var scenarioFilenames = ['Resource Classes.txt',
 const c_ExtendSimModelPath = "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP example model (GS).mox"
 
 function ExtendSimASP_login(username, password, login_callback, res) {  
-    // var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer?username=" + username + "&password=" + password;
+    // var queryURL = "http://" + IPaddress + ":8090/StreamingService/web/LoginToServer?username=" + username + "&password=" + password;
     // var queryURL = "http://10.0.20.228:8090/StreamingService/web/LoginToServer?username=" + username + "&password=" + password;
-    var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer";
+    var queryURL = "http://" + IPaddress + ":8090/StreamingService/web/LoginToServer";
     // var queryURL = "http://10.0.20.228:8090/StreamingService/web/LoginToServer";
 
     myMethod = "POST"   
@@ -46,8 +48,8 @@ function ExtendSimASP_login(username, password, login_callback, res) {
 }
 function ExtendSimASP_createScenarioFolder(myScenarioFolder, createScenarioFolder_callback, res) {
     // Execute WCF service to create a scenario folder  
-    // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
-    var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder"
+    // var queryURL = "http://" + IPaddress + ":8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
+    var queryURL = "http://" + IPaddress + ":8090/StreamingService/web/CreateScenarioFolder"
     var myheaders = { 
         accept: "application/json", 
     }; 
@@ -86,22 +88,22 @@ function ExtendSimASP_copyModelToScenarioFolder(modelPathname, scenarioFolderPat
         contentType: "application/json;charset=utf-8",
         headers : myheaders,
         muteHttpExceptions : false};
-        var queryURL = "http://184.171.246.58:8090/StreamingService/web/CopyModelToScenarioFolder";
-    // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CopyModelToScenarioFolder?modelPathname=" + 
+        var queryURL = "http://" + IPaddress + ":8090/StreamingService/web/CopyModelToScenarioFolder";
+    // var queryURL = "http://" + IPaddress + ":8090/StreamingService/web/CopyModelToScenarioFolder?modelPathname=" + 
     //     encodeURIComponent(c_ExtendSimModelPath) + 
     //      "&scenarioFolderpath=" + encodeURIComponent(scenarioFolderPathname) + "&copyFolderContents=True";  
     console.log('ExtendSimASP_copyModelToScenarioFolder: url=' + queryURL + " modelName=" + modelPathname + " scenario pathname=" + scenarioFolderPathname);
     axios({
         url: queryURL,
         method: 'post',
-        accept : 'application/json',
+        accept: 'application/json',
         contentType: 'application/json;charset=utf-8',
-        headers : myheaders,
+        headers: myheaders,
         muteHttpExceptions : false,
-        params : {
+        params: {
             modelPathname : modelPathname,
-            scenarioFolderpath : scenarioFolderPathname,
-            copyFolderContents : copyFolderContents
+            scenarioFolderpath: scenarioFolderPathname,
+            copyFolderContents: copyFolderContents
         }
     }).then(function(response) {
         console.log('ExtendSimASP_copyModelToScenarioFolder: ' + response.data);   
@@ -109,13 +111,13 @@ function ExtendSimASP_copyModelToScenarioFolder(modelPathname, scenarioFolderPat
     });
 
 }
-function ExtendSimASP_sendFile(scenarioFolderPathname, filename, filedata, req, res) {
+function ExtendSimASP_sendFile(scenarioFolderPathname, filename, filedata) {
     var myheaders = { 
         accept: "application/json", 
     };     
-    var queryURL =  "http://184.171.246.58:8090/StreamingService/web/UploadPathname?filepathname=" + encodeURIComponent(scenarioFolderPathname + "/" + filename);
+    var queryURL =  "http://" + IPaddress + ":8090/StreamingService/web/UploadPathname?filepathname=" + encodeURIComponent(scenarioFolderPathname + "/" + filename);
     console.log("ExtendSimASP_sendFile - send filename for scenarioFolderPathname=" + scenarioFolderPathname);
-    axios({
+    return axios({
         url: queryURL,
         method: 'post',
         accept : "application/json",
@@ -124,8 +126,8 @@ function ExtendSimASP_sendFile(scenarioFolderPathname, filename, filedata, req, 
         muteHttpExceptions : false
     }).then(function(response) {
         console.log("ExtendSimASP_sendFile - send filedata =" + filedata);
-        var queryURL =  "http://184.171.246.58:8090/StreamingService/web/UploadStream"
-        axios({
+        var queryURL =  "http://" + IPaddress + ":8090/StreamingService/web/UploadStream"
+        return axios({
             url: queryURL,
             method: 'post',
             accept : 'application/json',
@@ -135,17 +137,44 @@ function ExtendSimASP_sendFile(scenarioFolderPathname, filename, filedata, req, 
             data: filedata,
             //    payload : result,
             muteHttpExceptions : false
-        }).then(function(response) {
-            console.log('ExtendSimASP_sendFile: ' + response.data);
-            res.json(req.query.filedata);
-        });   
+        })
     });
 }
 
+// Execute WCF service to submit the simulation scenario
+function ExtendSimsubmitScenario(userLoginSessionID, modelPathname, removeFolderOnCompletion) {
+    // var options5 = {
+    //     method : "POST",
+    //     accept : "application/json",
+    //     contentType: "application/octet-stream",
+    //     headers : myheaders,
+    //     muteHttpExceptions : false
+    // };
+    var myheaders = { 
+        accept: "application/json", 
+    };     
+
+    var queryURL = "http://" + IPaddress + ":8080/ExtendSimService/web/SubmitSimulationScenario_TF";
+    return axios({
+        url: queryURL,
+        method: 'post',
+        accept : "application/json",
+        contentType: "application/json;charset=utf-8",
+        headers : myheaders,
+        muteHttpExceptions : false,
+        params: 
+        {
+            userLoginSession_ID: userLoginSessionID,
+            modelPathname: modelPathname,
+            removeScenarioFolderOnCompletion: removeFolderOnCompletion
+        }
+    }).then(function(response) {
+
+    });
+}
 // ExtendSimASP_login(ExtendSimASP_createScenarioFolder);
 
 var db = require("../models");
-
 module.exports = function(app) {
 // ROUTES
 // User login route
@@ -176,16 +205,26 @@ app.get("/api/copymodeltoscenariofolder2/modelPathname=:modelPathname&:scenarioF
     // ExtendSimASP_copyModelToScenarioFolder(res.params.modelPathname, req.params.scenarioFolderPathname, req.params.copyFolderContents, ExtendSimASP_sendFile);
     res.json(req.params.scenarioFolderPathname);
 });
-
 app.get("/api/sendfilename", function(req, res) {
     console.log("Route /api/sendfilesdata: req.query.filedata=" + req.query.filedata);
-    ExtendSimASP_sendFile(req.query.scenarioFolderPathname, req.query.filename, req.query.filedata, req, res);
-    res.json(req.query.filedata);
+    ExtendSimASP_sendFile(req.query.scenarioFolderPathname, req.query.filename, req.query.filedata, req, res)
+    .then(function(result) {
+        res.json(req.query.filedata);
+    });
+
 });
 app.get("/api/sendfiledata", function(req, res) {
     console.log("Route /api/sendfilesdata: req.query=" + req.body);
     res.json(req.body);
 });
+app.get("/api/submitsimulationscenario", function(req, res) {
+    console.log("Route /api/submitsimulationscenario: userLoginSessionID=" + req.query.userLoginSessionID);
+    ExtendSimsubmitScenario(req.query.userLoginSessionID, req.query.modelPathname, req.query.removeFolderOnCompletion)
+    .then(function(result) {
+        res.json(req.query.userLoginSessionID);
+    });
+});
+
 
 //  Create scenario folder route
 app.post("/api/copymodeltoscenariofolder", function(req, res) {
@@ -196,7 +235,7 @@ app.post("/api/copymodeltoscenariofolder", function(req, res) {
 
     console.log("Successfully got to POST route /api/copymodeltoscenariofolder - req.query.modelPathname =" + req.query.modelPathname);
 // ExtendSimASP_copyModelToScenarioFolder(req.params.modelPathname, req.params.scenarioFolderPathname, req.params.copyFolderContents, ExtendSimASP_sendFile);
-res.json(req.query.modelPathname);
+    res.json(req.query.modelPathname);
 });
 
   // Create a new example

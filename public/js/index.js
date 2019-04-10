@@ -13,23 +13,25 @@ var myScenarioFolderName = "myProject2_scenario";
 //                          'Resource Requirement Expressions.txt',
 //                          'Resources.txt'];
 var scenarioInputFiles = [];
-var uploadedInputFiles = [];
 var AJAXscenarioInputfiles = [];
+var ExtendSimModelName = "/ASP example model (GS).mox";
 var ExtendSimModelPath =
-  "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP example model (GS).mox";
-
+  "C:/Users/peter/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP v10 models" +
+  ExtendSimModelName;
+// var ExtendSimModelPath =
+//   "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models" +
+//   ExtendSimModelName;
 // Get references to page elements
-var $exampleText = $("#example-text");
-var $exampleDescription = $("#example-description");
 var $submitLoginInfoBtn = $("#submit-login-info");
 var $submitSimulationScenarioBtn = $("#submit-simulation-scenario");
-var $exampleList = $("#example-list");
 var $scenarioName = $("#scenario-name-text");
+var $scenarioID = $("#scenario-id");
+var $scenarioFolderPathname = $("#scenario-folder-pathname");
 var $username = $("#username-text");
 var $password = $("#password-text");
-var $dropArea = $("#drop-area");
+// var $dropArea = $("#drop-area");
 //  ExtendSim API functions
-function ExtendSimASP_login_AJAX(username, password, login_callback) {
+function ExtendSimASPloginAJAX(username, password, login_callback) {
   // $.get(proxyUrl + targetUrl, function(data) {
   //    console.log(data);
   // });
@@ -40,13 +42,6 @@ function ExtendSimASP_login_AJAX(username, password, login_callback) {
   // var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer";
   // var targetUrl = proxyUrl + queryURL;
   var targetUrl = queryURL;
-  var options_textPOST = {
-    method: "POST",
-    accept: "application/json",
-    contentType: "application/json;charset=utf-8",
-    headers: myheaders,
-    muteHttpExceptions: false
-  };
   $.ajax({
     url: targetUrl,
     method: "get",
@@ -54,12 +49,12 @@ function ExtendSimASP_login_AJAX(username, password, login_callback) {
     contentType: "application/json;charset=utf-8",
     headers: myheaders
   }).then(function(response) {
-    var scenario_ID = response;
-    if (scenario_ID === "") {
-      console.log("ERROR: ExtendSimASP_login_AJAX");
+    var scenarioID = response;
+    if (scenarioID === "") {
+      console.log("ERROR: ExtendSimASPloginAJAX");
     } else {
-      $("#scenario-id").val(scenario_ID);
-      console.log("ExtendSimASP_login_AJAX: " + scenario_ID);
+      $("#scenario-id").val(scenarioID);
+      console.log("ExtendSimASPloginAJAX: " + scenarioID);
       // login_callback(ExtendSimASPcopyModelToScenarioFolder);
     }
   });
@@ -136,6 +131,12 @@ function sendFile(scenarioFolderPathname, files, fileIndex) {
       fileIndex++;
       if (fileIndex < files.length) {
         sendFile(scenarioFolderPathname, files, fileIndex++);
+      } else {
+        ExtendSimASPsubmitSimulationScenario(
+          $scenarioID.val(),
+          $scenarioFolderPathname.val() + ExtendSimModelName,
+          true
+        );
       }
     });
   };
@@ -148,49 +149,43 @@ function ExtendSimASPsendFiles(scenarioFolderPathname, files) {
   if (files.length) {
     sendFile(scenarioFolderPathname, files, 0);
   }
-  // for (var i = 0; i < files.length; i++) {
-  //   var reader = new FileReader();
-  //   reader.onload = (function(thisFile) {
-  //     return function(event) {
-  //       console.log("ThisFile+" + thisFile);
-  //       event.preventDefault();
-  //       // Here you can use `e.target.result` or `this.result`
-  //       // and `f.name`.
-  //       console.log("Reader result=" + event.result);
-  //       alert("Sending file = " + filename);
-  //       $.ajax({
-  //         url: queryNameURL,
-  //         method: "get",
-  //         accept: "application/json",
-  //         // contentType: "multipart/form-data",
-  //         contentType: "application/json;charset=utf-8",
-  //         headers: myheaders,
-  //         // data: reader.result,
-  //         muteHttpExceptions: false,
-  //         data: {
-  //           scenarioFolderPathname: scenarioFolderPathname,
-  //           filename: filename
-  //         }
-  //       }).then(function(response) {
-  //         console.log("Response=" + response);
-  //       });
-  //     };
-  //   })(file);
-  //   var file = files[i];
-  //   alert("files[i].name=" + file.name);
-  //   var filename = file.name;
-  //   reader.readAsBinaryString(file);
-  // }
-  // var myheaders = {
-  //   accept: "application/json",
-  // };
-  // var queryURL =  "http://184.171.246.58:8090/StreamingService/web/UploadPathname?filepathname=" + encodeURIComponent(scenarioFolderPathname + "/" + filename);
 }
+
+function ExtendSimASPsubmitSimulationScenario(
+  userLoginSessionID,
+  ExtendSimModelPath,
+  removeFolderOnCompletion
+) {
+  // Execute WCF service to create a scenario folder
+  // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
+  // var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder/" + encodeURIComponent(ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
+  var queryURL = "http://127.0.0.1:3000/api/submitsimulationscenario";
+
+  alert(
+    "Submitting the scenario now for userLoginSessionID=" + userLoginSessionID
+  );
+  $.ajax({
+    url: queryURL,
+    method: "get",
+    // accept : 'application/json',
+    contentType: "application/json;charset=utf-8",
+    headers: myheaders,
+    muteHttpExceptions: false,
+    data: {
+      userLoginSessionID: userLoginSessionID,
+      modelPathname: ExtendSimModelPath,
+      removeFolderOnCompletion: removeFolderOnCompletion
+    }
+  }).then(function(response) {
+    console.log("ExtendSimASPsubmitSimulationScenario: " + response);
+  });
+}
+
 // }
 //  Respond to user clicking button to submit the simulation scenarion they have created
 var handleSubmitLoginInfoBtnClick = function(event) {
   event.preventDefault();
-  ExtendSimASP_login_AJAX(
+  ExtendSimASPloginAJAX(
     $username.val(),
     $password.val(),
     ExtendSimASPcreateScenarioFolder
