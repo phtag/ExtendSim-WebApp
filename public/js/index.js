@@ -36,19 +36,21 @@ var $scenarioFolderPathname = $("#scenario-folder-pathname");
 var $username = $("#username-text");
 var $password = $("#password-text");
 var cycleTimeResultsFilename = "/Cycle Time Results.txt";
-var modelResultsFilename = "/Model Results.txt";
+// var modelResultsFilename = "/Model Results.txt";
+// var urlPrefix = "http://127.0.0.1:3000";
+var urlPrefix = "";
 
 var checkModelStatusTimer;
 var runCompletedScenarioStatus = 3;
 // var $dropArea = $("#drop-area");
 //  ExtendSim API functions
-function ExtendSimASPloginAJAX(username, password, login_callback) {
+function ExtendSimASPloginAJAX(username, password) {
   // $.get(proxyUrl + targetUrl, function(data) {
   //    console.log(data);
   // });
   // var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer?username=admin&password=model";
   // var queryURL = "localhost:3000/api/login/admin&model";
-  var queryURL = "http://127.0.0.1:3000/api/login/" + username + "&" + password;
+  var queryURL = urlPrefix + "/api/login/" + username + "&" + password;
 
   // var queryURL = "http://184.171.246.58:8090/StreamingService/web/LoginToServer";
   // var targetUrl = proxyUrl + queryURL;
@@ -75,7 +77,7 @@ function ExtendSimASPcreateScenarioFolder(myScenarioFolderName) {
   // Execute WCF service to create a scenario folder
   // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
   var queryURL =
-    "http://127.0.0.1:3000/api/createscenariofolder/" + myScenarioFolderName;
+    urlPrefix + "/api/createscenariofolder/" + myScenarioFolderName;
   $.ajax({
     url: queryURL,
     method: "get",
@@ -94,8 +96,8 @@ function ExtendSimASPcreateScenarioFolder(myScenarioFolderName) {
 function ExtendSimASPcopyModelToScenarioFolder(scenarioFolderPathname) {
   // Execute WCF service to create a scenario folder
   // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
-  // var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder/" + encodeURIComponent(ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
-  var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder";
+  // var queryURL = urlPrefix + "/api/copymodeltoscenariofolder/" + encodeURIComponent(ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
+  var queryURL = urlPrefix + "/api/copymodeltoscenariofolder";
   $.ajax({
     url: queryURL,
     method: "get",
@@ -114,7 +116,7 @@ function ExtendSimASPcopyModelToScenarioFolder(scenarioFolderPathname) {
   });
 }
 function sendFile(scenarioFolderPathname, files, fileIndex) {
-  var queryNameURL = "http://127.0.0.1:3000/api/sendfilename/";
+  var queryNameURL = urlPrefix + "/api/sendfilename/";
   var reader = new FileReader();
   reader.onload = function(event) {
     var filename = files[fileIndex].name;
@@ -155,7 +157,7 @@ function sendFile(scenarioFolderPathname, files, fileIndex) {
 }
 
 function ExtendSimASPsendFiles(scenarioFolderPathname, files) {
-  // var queryDataURL = "http://127.0.0.1:3000/api/sendfiledata/";
+  // var queryDataURL = urlPrefix + "/api/sendfiledata/";
   // alert("Reading  " + files.length + " files");
   if (files.length) {
     sendFile(scenarioFolderPathname, files, 0)
@@ -169,8 +171,8 @@ function ExtendSimASPsubmitSimulationScenario(
 ) {
   // Execute WCF service to create a scenario folder
   // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
-  // var queryURL = "http://127.0.0.1:3000/api/copymodeltoscenariofolder/" + encodeURIComponent(ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
-  var queryURL = "http://127.0.0.1:3000/api/submitsimulationscenario";
+  // var queryURL = urlPrefix + "/api/copymodeltoscenariofolder/" + encodeURIComponent(ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
+  var queryURL = urlPrefix + "/api/submitsimulationscenario";
 
   alert(
     "Submitting the scenario now for userLoginSessionID=" + userLoginSessionID
@@ -199,7 +201,7 @@ function ExtendSimASPsubmitSimulationScenario(
 }
 
 function ExtendSimASPCheckModelRunStatus() {
-  var queryURL = "http://127.0.0.1:3000/api/checkmodelrunstatus";
+  var queryURL = urlPrefix + "/api/checkmodelrunstatus";
   $.ajax({
     url: queryURL,
     method: "get",
@@ -223,7 +225,7 @@ function ExtendSimASPCheckModelRunStatus() {
 }
 
 function ExtendSimASPgetScenarioResults(filename) {
-  var queryURL = "http://127.0.0.1:3000/api/getscenarioresults";
+  var queryURL = urlPrefix + "/api/getscenarioresults";
   var myheaders = {
     accept: "application/json"
   };
@@ -236,7 +238,7 @@ function ExtendSimASPgetScenarioResults(filename) {
     headers: myheaders,
     muteHttpExceptions: false,
     data: {
-      filepath: $scenarioFolderPathname.val() + filename       
+      filepath: $scenarioFolderPathname.val() + filename
     }
   }).then(function(response) {
     console.log("ExtendSimASPgetScenarioResults: results=" + response);
@@ -248,11 +250,7 @@ function ExtendSimASPgetScenarioResults(filename) {
 //  Respond to user clicking button to submit the simulation scenarion they have created
 var handleSubmitLoginInfoBtnClick = function(event) {
   event.preventDefault();
-  ExtendSimASPloginAJAX(
-    $username.val(),
-    $password.val(),
-    ExtendSimASPcreateScenarioFolder
-  );
+  ExtendSimASPloginAJAX($username.val(), $password.val());
 };
 
 var handleSubmitSimulationScenarioBtnClick = function(event) {
