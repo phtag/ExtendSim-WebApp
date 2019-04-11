@@ -1,6 +1,9 @@
 
 var axios = require("axios");
 var fs = require("fs");
+var FileReader = require('filereader')
+const JSON = require('circular-json');
+const FileDownload = require('js-file-download');
 
 var IPaddress = "184.171.246.58";
 // var IPaddress = "10.0.20.228";
@@ -197,6 +200,45 @@ function ExtendSimCheckModelRunStatus(scenarioID) {
     });
 }
 
+function ExtendSimASPgetScenarioResults(filepathname, res) {
+    var queryURL = "http://184.171.246.58:8090/StreamingService/web/GetServerFileStream";
+    var myheaders = { 
+        accept: "application/json", 
+        }; 
+    console.log("ExtendSimASPgetScenarioResults: Getting scenario results from server...");
+    return axios({
+        url: queryURL,
+        method: 'post',
+        accept : "application/json",
+        // contentType: "application/octet-stream",
+        responseType: "blob",
+        headers : myheaders,
+        muteHttpExceptions : false,
+        params: 
+        {
+            filename: filepathname
+        }
+    }).then(function(response) {
+        console.log("ExtendSimASPgetScenarioResults: response=" + response.data);
+        // FileDownload(response.data, 'report.csv');
+        // convertBlobToText(JSON.stringify(response), responseCallback, res);
+        return response.data;
+    });
+}
+function responseCallback(textData, res) {
+    console.log("responseCallback: textData=" + textData);
+    res.json(textData);
+};
+
+function convertBlobToText(blobData, callback, res) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        console.log("convertBlobToText: result=" + reader.result);
+        callback(reader.result, res)
+    };  
+    reader.readAsText(blobData);
+  };
+  
 var db = require("../models");
 module.exports = function(app) {
 // ROUTES
@@ -253,6 +295,15 @@ app.get("/api/checkmodelrunstatus", function(req, res) {
         res.json(modelRunStatus);
     });
 });   
+
+app.get("/api/getscenarioresults", function(req, res) {
+    console.log("Route /api/getscenarioresults: filepath=" + req.query.filepath);
+    ExtendSimASPgetScenarioResults(req.query.filepath)
+    .then(function(result) {
+        console.log("Route /api/getscenarioresults: result=" + result);
+        res.json(result);
+    });
+});
 //  Create scenario folder route
 app.post("/api/copymodeltoscenariofolder", function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');

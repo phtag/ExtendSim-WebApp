@@ -35,6 +35,8 @@ var $scenarioID = $("#scenario-id");
 var $scenarioFolderPathname = $("#scenario-folder-pathname");
 var $username = $("#username-text");
 var $password = $("#password-text");
+var cycleTimeResultsFilename = "/Cycle Time Results.txt";
+var modelResultsFilename = "/Model Results.txt";
 
 var checkModelStatusTimer;
 var runCompletedScenarioStatus = 3;
@@ -189,7 +191,6 @@ function ExtendSimASPsubmitSimulationScenario(
     console.log("ExtendSimASPsubmitSimulationScenario: " + response);
     var scenarioID = response;
     $scenarioID.val(scenarioID);
-    alert("Setting interval for checking model run status");
     checkModelStatusTimer = setInterval(ExtendSimASPCheckModelRunStatus, 1000);
     // ExtendSimASPCheckModelRunStatus().then(function(result) {
     //   console.log("Status=" + result);
@@ -199,7 +200,6 @@ function ExtendSimASPsubmitSimulationScenario(
 
 function ExtendSimASPCheckModelRunStatus() {
   var queryURL = "http://127.0.0.1:3000/api/checkmodelrunstatus";
-  alert("ExtendSimASPCheckModelRunStatus: Entry");
   $.ajax({
     url: queryURL,
     method: "get",
@@ -214,11 +214,36 @@ function ExtendSimASPCheckModelRunStatus() {
     console.log("ExtendSimCheckModelRunStatus: status=" + response);
     if (response === runCompletedScenarioStatus) {
       clearInterval(checkModelStatusTimer);
+      // pull results for the scenario
+      ExtendSimASPgetScenarioResults(cycleTimeResultsFilename);
       // ExtendSimASPCheckModelRunStatus(scenarioID);
     }
     return response;
   });
 }
+
+function ExtendSimASPgetScenarioResults(filename) {
+  var queryURL = "http://127.0.0.1:3000/api/getscenarioresults";
+  var myheaders = {
+    accept: "application/json"
+  };
+  alert("Getting scenario results");
+  $.ajax({
+    url: queryURL,
+    method: "get",
+    // accept : 'application/json',
+    contentType: "application/json;charset=utf-8",
+    headers: myheaders,
+    muteHttpExceptions: false,
+    data: {
+      filepath: $scenarioFolderPathname.val() + filename       
+    }
+  }).then(function(response) {
+    console.log("ExtendSimASPgetScenarioResults: results=" + response);
+    return response;
+  });
+}
+
 // }
 //  Respond to user clicking button to submit the simulation scenarion they have created
 var handleSubmitLoginInfoBtnClick = function(event) {
