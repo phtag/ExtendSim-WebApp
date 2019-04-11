@@ -174,9 +174,9 @@ function ExtendSimASPsubmitSimulationScenario(
   // var queryURL = urlPrefix + "/api/copymodeltoscenariofolder/" + encodeURIComponent(ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
   var queryURL = urlPrefix + "/api/submitsimulationscenario";
 
-  alert(
-    "Submitting the scenario now for userLoginSessionID=" + userLoginSessionID
-  );
+  // alert(
+  //   "Submitting the scenario now for userLoginSessionID=" + userLoginSessionID
+  // );
   $.ajax({
     url: queryURL,
     method: "get",
@@ -229,7 +229,7 @@ function ExtendSimASPgetScenarioResults(filename) {
   var myheaders = {
     accept: "application/json"
   };
-  alert("Getting scenario results");
+  // alert("Getting scenario results");
   $.ajax({
     url: queryURL,
     method: "get",
