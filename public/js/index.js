@@ -217,14 +217,17 @@ function ExtendSimASPCheckModelRunStatus() {
     if (response === runCompletedScenarioStatus) {
       clearInterval(checkModelStatusTimer);
       // pull results for the scenario
-      ExtendSimASPgetScenarioResults(cycleTimeResultsFilename);
+      ExtendSimASPgetScenarioResults(
+        cycleTimeResultsFilename,
+        $userloginSessionID.val()
+      );
       // ExtendSimASPCheckModelRunStatus(scenarioID);
     }
     return response;
   });
 }
 
-function ExtendSimASPgetScenarioResults(filename) {
+function ExtendSimASPgetScenarioResults(filename, userLoginSessionID) {
   var queryURL = urlPrefix + "/api/getscenarioresults";
   var myheaders = {
     accept: "application/json"
@@ -238,6 +241,7 @@ function ExtendSimASPgetScenarioResults(filename) {
     headers: myheaders,
     muteHttpExceptions: false,
     data: {
+      userLoginSessionID: userLoginSessionID,
       filepath: $scenarioFolderPathname.val() + filename
     }
   }).then(function(response) {

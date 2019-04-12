@@ -223,11 +223,12 @@ function ExtendSimCheckModelRunStatus(scenarioID) {
     });
 }
 
-function ExtendSimASPgetScenarioResults(filepathname, res) {
+function ExtendSimASPgetScenarioResults(filepathname, userLoginSessionID) {
     var queryURL = "http://" + IPaddress + ":8090/StreamingService/web/GetServerFileStream";
     var myheaders = { 
         accept: "application/json", 
         }; 
+    var scenarioResults;
     console.log("ExtendSimASPgetScenarioResults: Getting scenario results from server...");
     return axios({
         url: queryURL,
@@ -242,10 +243,18 @@ function ExtendSimASPgetScenarioResults(filepathname, res) {
             filename: filepathname
         }
     }).then(function(response) {
+        scenarioResults = response.data;
         console.log("ExtendSimASPgetScenarioResults: response=" + response.data);
-        // FileDownload(response.data, 'report.csv');
-        // convertBlobToText(JSON.stringify(response), responseCallback, res);
-        return response.data;
+        return db.scenario.update({
+            scenarioCompletionDataTime: new Date(),
+        }, {
+            where: {
+                userLoginSessionID: userLoginSessionID
+            }
+        }).then(function(dbresponse) {
+            return scenarioResults;     
+        });
+        // return response.data;
     });
 }
 function responseCallback(textData, res) {
@@ -320,8 +329,8 @@ app.get("/api/checkmodelrunstatus", function(req, res) {
 });   
 
 app.get("/api/getscenarioresults", function(req, res) {
-    console.log("Route /api/getscenarioresults: filepath=" + req.query.filepath);
-    ExtendSimASPgetScenarioResults(req.query.filepath)
+    console.log("Route /api/getscenarioresults: filepath=" + req.query.filepath + " userLoginSessionID=" + req.query.userLoginSessionID);
+    ExtendSimASPgetScenarioResults(req.query.filepath, req.query.userLoginSessionID)
     .then(function(result) {
         console.log("Route /api/getscenarioresults: result=" + result);
         res.json(result);
