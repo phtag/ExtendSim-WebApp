@@ -6,8 +6,11 @@ var reader = require('filereader')
 // const FileDownload = require('js-file-download');
 var db = require("../models");
 
-// var IPaddress = "184.171.246.58";
-var IPaddress = "10.0.20.228";
+// Heroku IP address
+var IPaddress = "184.171.246.58";
+
+// UC Davis Extension IP address
+// var IPaddress = "10.0.20.228";
 var scenarioFolderPathname;
 var scenarioFilenames = ['Resource Classes.txt',
                          'Model Parameters.txt',
@@ -252,29 +255,34 @@ function ExtendSimASPgetScenarioResults(filepathname, userLoginSessionID) {
                 userLoginSessionID: userLoginSessionID
             }
         }).then(function(dbresponse) {
-            reader.onloadend = function(evt) {
-                if (evt.target.readyState == FileReader.DONE) {           
-                //   var textArr = evt.target.result.split(/\r\n|\r|\n/g);
-                //   console.log(textArr);
-                console.log("Reader result=" + evt.target.result);
-                }
-            };
             // reader.readAsText(scenarioResults);
             // reader.readAsBinaryString(scenarioResults);
             var myResult = JSON.stringify(scenarioResults);
             console.log("MyResult=" + myResult);
             var textArr = myResult.split(/\r\n|\r|\n/g);
             console.log("textArr.length =" + textArr.length);
-            splitArray = scenarioResults.split('\r\n').map(function(ln){
+            var scenarioResultsArray = scenarioResults.split('\r\n').map(function(ln){
                 return ln.split('\t');
             });
-            console.log("splitArray.length =" + splitArray.length);
-            splitArray.forEach(function(element) {
-                console.log("element=" + element);
+            // Remove last empty element from array
+            scenarioResultsArray.pop();
+            console.log("scenarioResultsArray.length =" + scenarioResultsArray.length);
+            var row = 1;
+            scenarioResultsArray.forEach(function(element) {
+                db.cycletime.create({
+                    stepname: element[0],
+                    resourceRequirement: element[1],
+                    totalJobsProcessed: element[2],
+                    totalProcessTime: element[3],
+                    totalWaitTime: element[4],
+                    avgProcessTime: element[5],
+                    avgWaitTime: element[6],
+                    avgCycleTime: element[7],
+                    CoVarrivals: element[8],
+                    CoVdepartures: element[9]
+                });
             });
-            // console.log("splitArray =" + splitArray);
-            
-
+            // console.log("splitArray =" + splitArray);            
             return scenarioResults;     
         });
         // return response.data;

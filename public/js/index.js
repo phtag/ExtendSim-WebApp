@@ -17,14 +17,14 @@ var AJAXscenarioInputfiles = [];
 var ExtendSimModelName = "/ASP example model (GS).mox";
 
 //  localhost (use this for testing)
-var ExtendSimModelPath =
-  "C:/Users/peter/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP v10 models" +
-  ExtendSimModelName;
+// var ExtendSimModelPath =
+//   "C:/Users/peter/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models/ASP v10 models" +
+//   ExtendSimModelName;
 
 // ExtendSim server (use this for Heroku)
-// var ExtendSimModelPath =
-//   "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models" +
-//   ExtendSimModelName;
+var ExtendSimModelPath =
+  "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models" +
+  ExtendSimModelName;
 // Get references to page elements
 var $submitLoginInfoBtn = $("#submit-login-info");
 var $submitSimulationScenarioBtn = $("#submit-simulation-scenario");
