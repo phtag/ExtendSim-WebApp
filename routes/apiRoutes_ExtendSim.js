@@ -2,11 +2,12 @@
 var axios = require("axios");
 var fs = require("fs");
 var FileReader = require('filereader')
-const JSON = require('circular-json');
-const FileDownload = require('js-file-download');
+// const JSON = require('circular-json');
+// const FileDownload = require('js-file-download');
+var db = require("../models");
 
-var IPaddress = "184.171.246.58";
-// var IPaddress = "10.0.20.228";
+// var IPaddress = "184.171.246.58";
+var IPaddress = "10.0.20.228";
 var scenarioFolderPathname;
 var scenarioFilenames = ['Resource Classes.txt',
                          'Model Parameters.txt',
@@ -45,8 +46,18 @@ function ExtendSimASP_login(username, password, login_callback, res) {
             password: password
         }
       }).then(function(response) {
-          console.log('ExtendSimASP_login: ' + response.data);
-          res.json(response.data);
+        console.log('ExtendSimASP_login: ' + response.data);
+        db.scenario.create({
+            userLoginSessionID: response.data,
+            username: username,
+            scenarioID: null,
+            scenarioSubmissionDataTime: null,
+            scenarioCompletionDataTime: null
+        }).then(function(dbTodo) {
+                // We have access to the new todo as an argument inside of the callback function
+            res.json(response.data);
+        });
+        // res.json(response.data);
     });
 }
 function ExtendSimASP_createScenarioFolder(myScenarioFolder, createScenarioFolder_callback, res) {
@@ -112,7 +123,6 @@ function ExtendSimASP_copyModelToScenarioFolder(modelPathname, scenarioFolderPat
         console.log('ExtendSimASP_copyModelToScenarioFolder: ' + response.data);   
         // copyModelToScenarioFolder_callback(scenarioFolderPathname, scenarioFilenames);
     });
-
 }
 function ExtendSimASP_sendFile(scenarioFolderPathname, filename, filedata) {
     var myheaders = { 
@@ -149,7 +159,7 @@ function ExtendSimSubmitScenario(userLoginSessionID, modelPathname, removeFolder
     var myheaders = { 
         accept: "application/json", 
     };     
-
+    var scenarioID;
     var queryURL = "http://" + IPaddress + ":8080/ExtendSimService/web/SubmitSimulationScenario_TF";
     return axios({
         url: queryURL,
@@ -165,9 +175,22 @@ function ExtendSimSubmitScenario(userLoginSessionID, modelPathname, removeFolder
             removeScenarioFolderOnCompletion: removeFolderOnCompletion
         }
     }).then(function(response) {
+        scenarioID = response.data;
         // ExtendSimCheckModelRunStatus(userLoginSessionID);
         console.log("ExtendSimSubmitScenario: response.data=" + response.data);
-        return response.data;
+        // update the user's scenario ID and submission time in the database
+        return db.scenario.update({
+            scenarioID: response.data,
+            scenarioSubmissionDataTime: new Date(),
+        }, {
+            where: {
+                userLoginSessionID: userLoginSessionID
+            }
+        }).then(function(dbresponse) {
+            return scenarioID;     
+        });
+        // return scenarioID;     
+        // return response.data;     
     });
 }
 function ExtendSimCheckModelRunStatus(scenarioID) {
@@ -201,7 +224,7 @@ function ExtendSimCheckModelRunStatus(scenarioID) {
 }
 
 function ExtendSimASPgetScenarioResults(filepathname, res) {
-    var queryURL = "http://184.171.246.58:8090/StreamingService/web/GetServerFileStream";
+    var queryURL = "http://" + IPaddress + ":8090/StreamingService/web/GetServerFileStream";
     var myheaders = { 
         accept: "application/json", 
         }; 
