@@ -1,7 +1,7 @@
 
 var axios = require("axios");
 var fs = require("fs");
-var FileReader = require('filereader')
+var reader = require('filereader')
 // const JSON = require('circular-json');
 // const FileDownload = require('js-file-download');
 var db = require("../models");
@@ -252,6 +252,29 @@ function ExtendSimASPgetScenarioResults(filepathname, userLoginSessionID) {
                 userLoginSessionID: userLoginSessionID
             }
         }).then(function(dbresponse) {
+            reader.onloadend = function(evt) {
+                if (evt.target.readyState == FileReader.DONE) {           
+                //   var textArr = evt.target.result.split(/\r\n|\r|\n/g);
+                //   console.log(textArr);
+                console.log("Reader result=" + evt.target.result);
+                }
+            };
+            // reader.readAsText(scenarioResults);
+            // reader.readAsBinaryString(scenarioResults);
+            var myResult = JSON.stringify(scenarioResults);
+            console.log("MyResult=" + myResult);
+            var textArr = myResult.split(/\r\n|\r|\n/g);
+            console.log("textArr.length =" + textArr.length);
+            splitArray = scenarioResults.split('\r\n').map(function(ln){
+                return ln.split('\t');
+            });
+            console.log("splitArray.length =" + splitArray.length);
+            splitArray.forEach(function(element) {
+                console.log("element=" + element);
+            });
+            // console.log("splitArray =" + splitArray);
+            
+
             return scenarioResults;     
         });
         // return response.data;
