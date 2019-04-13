@@ -11,9 +11,13 @@ module.exports = function(app) {
     res.render("scenario-inputs", { userLoginID: req.query.userLoginID });
   });
 
-  // Load example page and pass in an example by id
-  // app.get("/displaytable", function(req, res) {
-  //   // db.cycletime.findOne({ where: { id: req.params.id } }).then(function(dbExample) {
+  app.get("/showresults", function(req, res) {
+    console.log("Servicing /showresults route...");
+    db.cycletime.findAll().then(function(queryResults) {
+      res.render("cycletime", { cycleTimeData: queryResults });
+    });
+  });
+  // db.cycletime.findAll({ where: { id: req.params.id } }).then(function(dbExample) {
   //   //   res.render("cycletime", {
   //   //     example: dbExample
   //   //   });

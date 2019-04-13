@@ -294,14 +294,6 @@ var handleSubmitLoginInfoBtnClick = function(event) {
     event.preventDefault();
     // alert("Returned userLoginID=" + userLoginID);
     console.log("userLoginID=" + userLoginID);
-    // $.get("/scenarioinputs", function(pageHtml) {
-    //   event.preventDefault();
-    //   console.log(pageHtml);
-    //   $("body").html(pageHtml);
-    //   // $("body").html(pageHtml).promise.done(function(){
-    //   //   alert("Promise done");
-    //   // });
-    // });
     var queryURLscenarioInputs = urlPrefix + "/scenarioinputs";
     $.ajax({
       url: queryURLscenarioInputs,
@@ -320,20 +312,35 @@ var handleSubmitLoginInfoBtnClick = function(event) {
     // $userLoginID.val(userLoginID);
   });
 };
-$(document).on("onkeypress", "#scenario-name-text", function(event) {
-  event.preventDefault();
-  validateScenarioInputs();
-});
+// $(document).on("onkeypress", "#scenario-name-text", function(event) {
+//   event.preventDefault();
+//   validateScenarioInputs();
+// });
 var handleSubmitSimulationScenarioBtnClick = function(event) {
   event.preventDefault();
   // alert("Submitting..." + $scenarioName.val());
   ExtendSimASPcreateScenarioFolder($scenarioName.val());
 };
-// var handleCheckScenarioBtnClick = function(event) {
-//   event.preventDefault();
+var handleShowScenarioResultsBtnClick = function(event) {
+  event.preventDefault();
 
-//   // ExtendSimASPCheckModelRunStatus($scenarioID.val());
-// };
+  var queryURLscenarioInputs = urlPrefix + "/showresults";
+  $.ajax({
+    url: queryURLscenarioInputs,
+    method: "get",
+    accept: "application/json",
+    contentType: "application/json;charset=utf-8",
+    headers: myheaders,
+    data: {
+      userLoginID: $userloginSessionID.val()
+    }
+  }).then(function(response) {
+    event.preventDefault();
+    // alert("Got page back");
+    $("body").html(response);
+  });
+
+};
 //________________________________________
 // Add event listeners
 //  Buttons
@@ -342,7 +349,8 @@ $submitSimulationScenarioBtn.on(
   "click",
   handleSubmitSimulationScenarioBtnClick
 );
-// $checkScenarioStatusBtn.on("click", handleCheckScenarioBtnClick);
+$showScenarioResultsBtn.on("click", handleShowScenarioResultsBtnClick);
+
 // Drop area events
 $(document).on("dragover", "#drop-area", function(event) {
   event.preventDefault();
