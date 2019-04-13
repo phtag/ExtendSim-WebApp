@@ -13,19 +13,26 @@
             <input type="text" id="scenario-name-text" class="form-control" aria-describedby="scenario-name-text" placeholder="Enter scenario name">
           </div>          
           <button id="submit-simulation-scenario" class="btn btn-primary float-left">Submit simulation scenario</button>
-          <button id="check-scenario-status" class="btn btn-primary float-right">Check scenario status</button>
        </form>
         <h3>Scenario Information:</h3>
-        <label for="user-login-id">User Login ID:</label>
+        <label for="user-login-id" class="scenario-input-labels">User Login ID:</label>
         <output name="userLoginID" id="user-login-id">{{userLoginID}}</output>
         <br>
-        <label for="scenario-id">Scenario ID:</label>
+        <label for="scenario-id" class="scenario-input-labels">Scenario ID:</label>
         <output name="scenario_id" id="scenario-id"></output>
         <br>
-        <label for="scenario-folder-pathname">Scenario folder path:</label>
+        <label for="scenario-folder-pathname" class="scenario-input-labels">Scenario folder path:</label>
         <output name="scenario_folder_path" id="scenario-folder-pathname"></output>
+        <br>
+        <label for="scenario-run-status" class="scenario-input-labels">Scenario run status:</label>
+        <output name="scenarioRunStatus" id="scenario-run-status"></output>
+        <button id="show-scenario-results" class="btn btn-primary float-right">Show scenario results</button>
         {{!-- <input type="file" id="scenario-input-files" name="files[]" multiple /> --}}
+        <br>
+        <label for="scenario-input-files-list" class="scenario-input-labels">Selected Scenario Input Files:</label>
         <output id="scenario-input-files-list"></output>
+        <br>
+        <label for="drop-area" class="scenario-input-labels">Scenario Input Files Drop Zone:</label>
         <div id="drop-area">
         </div>
       </div>

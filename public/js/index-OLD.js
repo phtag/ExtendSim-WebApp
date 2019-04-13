@@ -22,7 +22,7 @@ var dropActive = false;
 //   ExtendSimModelName;
 
 // ExtendSim server (use this for Heroku)
-// alert("Loading page...");
+alert("Loading page...");
 var ExtendSimModelPath =
   "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models" +
   ExtendSimModelName;
@@ -30,11 +30,11 @@ var ExtendSimModelPath =
 var $submitLoginInfoBtn = $("#submit-login-info");
 var $submitSimulationScenarioBtn = $("#submit-simulation-scenario");
 var $showScenarioResultsBtn = $("#show-scenario-results");
+// var $checkScenarioStatusBtn = $("#check-scenario-status");
 var $scenarioName = $("#scenario-name-text");
 var $userloginSessionID = $("#user-login-id");
 var $scenarioID = $("#scenario-id");
 var $scenarioFolderPathname = $("#scenario-folder-pathname");
-var $scenarioRunStatus = $("#scenario-run-status");
 var $username = $("#username-text");
 var $password = $("#password-text");
 var cycleTimeResultsFilename = "/Cycle Time Results.txt";
@@ -44,10 +44,6 @@ var urlPrefix = "";
 
 var checkModelStatusTimer;
 var runCompletedScenarioStatus = 3;
-
-// $submitSimulationScenarioBtn.hide();
-// $showScenarioResultsBtn.hide();
-alert("Executing code...");
 // var $dropArea = $("#drop-area");
 //  ExtendSim API functions
 function ExtendSimASPloginAJAX(username, password) {
@@ -232,17 +228,13 @@ function ExtendSimASPCheckModelRunStatus() {
   }).then(function(response) {
     console.log("ExtendSimCheckModelRunStatus: status=" + response);
     if (response === runCompletedScenarioStatus) {
-      $scenarioRunStatus.val("Completed");
       clearInterval(checkModelStatusTimer);
       // pull results for the scenario
       ExtendSimASPgetScenarioResults(
         cycleTimeResultsFilename,
         $userloginSessionID.val()
       );
-      $showScenarioResultsBtn.show();
       // ExtendSimASPCheckModelRunStatus(scenarioID);
-    } else {
-      $scenarioRunStatus.val("Running...");
     }
     return response;
   });
@@ -270,12 +262,6 @@ function ExtendSimASPgetScenarioResults(filename, userLoginSessionID) {
     return response;
   });
 }
-
-// function validateScenarioInputs() {
-//   if (($scenarioName.val() != "") || (AJAXscenarioInputfiles.length > 0)) {
-//     $submitSimulationScenarioBtn.show();
-//   }
-// }
 // }
 //  Respond to user clicking button to submit the simulation scenarion they have created
 var handleSubmitLoginInfoBtnClick = function(event) {
@@ -292,7 +278,7 @@ var handleSubmitLoginInfoBtnClick = function(event) {
   ) {
     // var queryURLscenarioInputs = urlPrefix + "/scenarioinputs";
     event.preventDefault();
-    // alert("Returned userLoginID=" + userLoginID);
+    alert("Returned userLoginID=" + userLoginID);
     console.log("userLoginID=" + userLoginID);
     // $.get("/scenarioinputs", function(pageHtml) {
     //   event.preventDefault();
@@ -314,26 +300,32 @@ var handleSubmitLoginInfoBtnClick = function(event) {
       }
     }).then(function(response) {
       event.preventDefault();
-      // alert("Got page back");
+      alert("Got page back");
       $("body").html(response);
     });
     // $userLoginID.val(userLoginID);
   });
 };
-// $(document).on("onkeypress", "#scenario-name-text", function(event) {
+$(document).on("click", "#scenario-name-text", function(event) {
+  event.preventDefault();
+  console.log("Value=" + $scenarioName.val());
+});
+// $(document).on("click", "#submit-simulation-scenario", function(event) {
 //   event.preventDefault();
-//   validateScenarioInputs();
+//   alert("Submitting..." + $scenarioName.val());
+//   ExtendSimASPcreateScenarioFolder($scenarioName.val());
 // });
 var handleSubmitSimulationScenarioBtnClick = function(event) {
   event.preventDefault();
-  // alert("Submitting..." + $scenarioName.val());
+  alert("Submitting..." + $scenarioName.val());
   ExtendSimASPcreateScenarioFolder($scenarioName.val());
 };
-// var handleCheckScenarioBtnClick = function(event) {
-//   event.preventDefault();
 
-//   // ExtendSimASPCheckModelRunStatus($scenarioID.val());
-// };
+var handleCheckScenarioBtnClick = function(event) {
+  event.preventDefault();
+
+  // ExtendSimASPCheckModelRunStatus($scenarioID.val());
+};
 //________________________________________
 // Add event listeners
 //  Buttons
@@ -354,15 +346,15 @@ $(document).on("dragenter", "#drop-area", function(event) {
 });
 $(document).on("drop", "#drop-area", function(event) {
   event.preventDefault();
-  alert("Drop");
   if (!dropActive) {
     var dataTransfer = event.originalEvent.dataTransfer;
     //  Save the list of files for pushing to the server when the user submits the simulation scenario
     AJAXscenarioInputfiles = event.originalEvent.dataTransfer.files;
+
+    // alert("You just uploaded " + AJAXscenarioInputfiles.length + " files");
     if (dataTransfer && AJAXscenarioInputfiles.length) {
       event.preventDefault();
       event.stopPropagation();
-
       // build formatted list of files with properties in an array
       for (var i = 0; i < AJAXscenarioInputfiles.length; i++) {
         scenarioInputFiles.push(
@@ -382,8 +374,7 @@ $(document).on("drop", "#drop-area", function(event) {
       // display the list of files on the web page
       var $scenarioInputFiles = $("#scenario-input-files-list");
       $scenarioInputFiles.html("<ul>" + scenarioInputFiles.join("") + "</ul>");
-      dropActive = true;
-      // validateScenarioInputs();
+      dropActive = True;
     }
   } else {
     dropActive = false;

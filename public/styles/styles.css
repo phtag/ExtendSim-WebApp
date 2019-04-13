@@ -1,6 +1,10 @@
 .list-group-item {
   line-height: 2.5;
 }
+.scenario-input-labels {
+  font-weight: bold;
+  font-size: 18px;
+}
 #ExtendSim-header {
   background-image:url(https://extendsim.com/templates/extendsim/images/ES_logo.gif);
   background-repeat:no-repeat;

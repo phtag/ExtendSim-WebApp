@@ -345,10 +345,12 @@ $submitSimulationScenarioBtn.on(
 // $checkScenarioStatusBtn.on("click", handleCheckScenarioBtnClick);
 // Drop area events
 $(document).on("dragover", "#drop-area", function(event) {
+  alert("Here");
   event.preventDefault();
   event.stopPropagation();
 });
 $(document).on("dragenter", "#drop-area", function(event) {
+  alert("Here");
   event.preventDefault();
   event.stopPropagation();
 });
