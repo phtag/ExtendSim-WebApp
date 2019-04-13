@@ -9,7 +9,7 @@
         <h2>ExtendSim Web Simulation Scenario Inputs Page</h2>
         <form class="clearfix mb-4" action="POST">
           <div class="form-group">
-            <label for="scenario-name-text">Scenario name:</label>
+            <label for="scenario-name-text" class="scenario-input-labels" oninput="validateScenarioInputs()">Scenario name:</label>
             <input type="text" id="scenario-name-text" class="form-control" aria-describedby="scenario-name-text" placeholder="Enter scenario name">
           </div>          
           <button id="submit-simulation-scenario" class="btn btn-primary float-left">Submit simulation scenario</button>

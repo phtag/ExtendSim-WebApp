@@ -45,9 +45,8 @@ var urlPrefix = "";
 var checkModelStatusTimer;
 var runCompletedScenarioStatus = 3;
 
-// $submitSimulationScenarioBtn.hide();
-// $showScenarioResultsBtn.hide();
-alert("Executing code...");
+$submitSimulationScenarioBtn.hide();
+$showScenarioResultsBtn.hide();
 // var $dropArea = $("#drop-area");
 //  ExtendSim API functions
 function ExtendSimASPloginAJAX(username, password) {
@@ -271,12 +270,13 @@ function ExtendSimASPgetScenarioResults(filename, userLoginSessionID) {
   });
 }
 
-// function validateScenarioInputs() {
-//   if (($scenarioName.val() != "") || (AJAXscenarioInputfiles.length > 0)) {
-//     $submitSimulationScenarioBtn.show();
-//   }
-// }
-// }
+function validateScenarioInputs() {
+  alert("Triggered");
+  if ($scenarioName.val() !== "" && AJAXscenarioInputfiles.length > 0) {
+    $submitSimulationScenarioBtn.show();
+  }
+}
+
 //  Respond to user clicking button to submit the simulation scenarion they have created
 var handleSubmitLoginInfoBtnClick = function(event) {
   event.preventDefault();
@@ -320,10 +320,10 @@ var handleSubmitLoginInfoBtnClick = function(event) {
     // $userLoginID.val(userLoginID);
   });
 };
-// $(document).on("onkeypress", "#scenario-name-text", function(event) {
-//   event.preventDefault();
-//   validateScenarioInputs();
-// });
+$(document).on("onkeypress", "#scenario-name-text", function(event) {
+  event.preventDefault();
+  validateScenarioInputs();
+});
 var handleSubmitSimulationScenarioBtnClick = function(event) {
   event.preventDefault();
   // alert("Submitting..." + $scenarioName.val());
@@ -354,7 +354,6 @@ $(document).on("dragenter", "#drop-area", function(event) {
 });
 $(document).on("drop", "#drop-area", function(event) {
   event.preventDefault();
-  alert("Drop");
   if (!dropActive) {
     var dataTransfer = event.originalEvent.dataTransfer;
     //  Save the list of files for pushing to the server when the user submits the simulation scenario
@@ -383,9 +382,14 @@ $(document).on("drop", "#drop-area", function(event) {
       var $scenarioInputFiles = $("#scenario-input-files-list");
       $scenarioInputFiles.html("<ul>" + scenarioInputFiles.join("") + "</ul>");
       dropActive = true;
-      // validateScenarioInputs();
+      validateScenarioInputs();
     }
   } else {
     dropActive = false;
   }
+});
+$(document).on('change', '#scenario-name-text', function(event) {
+  //  build the query key for Firebase using the contents of the ID for the
+  //  DOM element that was clicked
+  validateScenarioInputs();
 });
