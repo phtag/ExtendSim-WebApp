@@ -22,7 +22,6 @@ var dropActive = false;
 //   ExtendSimModelName;
 
 // ExtendSim server (use this for Heroku)
-// alert("Loading page...");
 var ExtendSimModelPath =
   "C:/Users/Administrator/Documents/ExtendSim10ASP_Prod/ASP/ASP Servers/ExtendSim Models" +
   ExtendSimModelName;
@@ -141,7 +140,6 @@ function sendFile(scenarioFolderPathname, files, fileIndex) {
     // Here you can use `e.target.result` or `this.result`
     // and `f.name`.
     console.log("Reader result=" + reader.result);
-    // alert("Sending file = " + filename);
     $.ajax({
       url: queryNameURL,
       method: "get",
@@ -175,7 +173,6 @@ function sendFile(scenarioFolderPathname, files, fileIndex) {
 
 function ExtendSimASPsendFiles(scenarioFolderPathname, files) {
   // var queryDataURL = urlPrefix + "/api/sendfiledata/";
-  // alert("Reading  " + files.length + " files");
   if (files.length) {
     sendFile(scenarioFolderPathname, files, 0);
   }
@@ -190,7 +187,6 @@ function ExtendSimASPsubmitSimulationScenario(
   // var queryURL = "http://184.171.246.58:8090/StreamingService/web/CreateScenarioFolder?scenarioFoldername=myScenarioFolder"
   // var queryURL = urlPrefix + "/api/copymodeltoscenariofolder/" + encodeURIComponent(ExtendSimModelPath) + "&" + encodeURIComponent(scenarioFolderPathname) + "&" + true;
   var queryURL = urlPrefix + "/api/submitsimulationscenario";
-  // alert(
   //   "Submitting the scenario now for userLoginSessionID=" + userLoginSessionID
   // );
   $.ajax({
@@ -252,7 +248,6 @@ function ExtendSimASPgetScenarioResults(filename, userLoginSessionID) {
   var myheaders = {
     accept: "application/json"
   };
-  // alert("Getting scenario results");
   $.ajax({
     url: queryURL,
     method: "get",
@@ -271,7 +266,6 @@ function ExtendSimASPgetScenarioResults(filename, userLoginSessionID) {
 }
 
 function validateScenarioInputs() {
-  alert("Triggered");
   if ($scenarioName.val() !== "" && AJAXscenarioInputfiles.length > 0) {
     $submitSimulationScenarioBtn.show();
   }
@@ -292,7 +286,6 @@ var handleSubmitLoginInfoBtnClick = function(event) {
   ) {
     // var queryURLscenarioInputs = urlPrefix + "/scenarioinputs";
     event.preventDefault();
-    // alert("Returned userLoginID=" + userLoginID);
     console.log("userLoginID=" + userLoginID);
     var queryURLscenarioInputs = urlPrefix + "/scenarioinputs";
     $.ajax({
@@ -306,7 +299,6 @@ var handleSubmitLoginInfoBtnClick = function(event) {
       }
     }).then(function(response) {
       event.preventDefault();
-      // alert("Got page back");
       $("body").html(response);
     });
     // $userLoginID.val(userLoginID);
@@ -318,7 +310,7 @@ var handleSubmitLoginInfoBtnClick = function(event) {
 // });
 var handleSubmitSimulationScenarioBtnClick = function(event) {
   event.preventDefault();
-  // alert("Submitting..." + $scenarioName.val());
+  $scenarioRunStatus.val("Sending input data to server...");
   ExtendSimASPcreateScenarioFolder($scenarioName.val());
 };
 var handleShowScenarioResultsBtnClick = function(event) {
@@ -336,10 +328,8 @@ var handleShowScenarioResultsBtnClick = function(event) {
     }
   }).then(function(response) {
     event.preventDefault();
-    // alert("Got page back");
     $("body").html(response);
   });
-
 };
 //________________________________________
 // Add event listeners
