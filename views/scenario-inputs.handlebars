@@ -1,0 +1,37 @@
+<div id="home">
+  <div class="container">
+    <div class="row">
+      <header id="ExtendSim-header">
+      </header>
+    </div>
+    <div class="row">
+      <div class="col-8 offset-2">
+        <h2>ExtendSim Web Simulation Scenario Inputs Page</h2>
+        <form class="clearfix mb-4" action="POST">
+          <div class="form-group">
+            <label for="scenario-name-text">Scenario name:</label>
+            <input type="text" id="scenario-name-text" class="form-control" aria-describedby="scenario-name-text" placeholder="Enter scenario name">
+          </div>          
+          <button id="submit-simulation-scenario" class="btn btn-primary float-left">Submit simulation scenario</button>
+          <button id="check-scenario-status" class="btn btn-primary float-right">Check scenario status</button>
+       </form>
+        <h3>Scenario Information:</h3>
+        <label for="user-login-id">User Login ID:</label>
+        <output name="userLoginID" id="user-login-id">{{userLoginID}}</output>
+        <br>
+        <label for="scenario-id">Scenario ID:</label>
+        <output name="scenario_id" id="scenario-id"></output>
+        <br>
+        <label for="scenario-folder-pathname">Scenario folder path:</label>
+        <output name="scenario_folder_path" id="scenario-folder-pathname"></output>
+        {{!-- <input type="file" id="scenario-input-files" name="files[]" multiple /> --}}
+        <output id="scenario-input-files-list"></output>
+        <div id="drop-area">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
