@@ -1,38 +1,44 @@
-<div class="container" style="margin-left: 20px">
-  <div class="row"">
-    {{!-- <div class="col-8 offset-2"> --}}
-    <div class="col-8">
-      <table border="1">
+<div id="home">
+  <div class="container" style="margin-left: 20px">
+    <div class="row">
+      <header id="ExtendSim-header">
+      </header>
+    </div>
+    <div class="row"">
+      {{!-- <div class="col-8 offset-2"> --}}
+      <div class="col-8">
+        <table border="1">
+          <tr>
+            <th>Process Step Name</th>
+            <th>Resource Requirement</th>
+            <th>Total Jobs Processed</th>
+            <th>Total Process Time (hrs)</th>
+            <th>Total Wait Time (hrs)</th>
+            <th>Avg. Process Time (hrs)</th>
+            <th>Avg. Wait Time (hrs)</th>
+            <th>Avg. Cycle Time (hrs)</th>
+            <th>CoV Arrivals</th>
+            <th>CoV Departures</th>
+          </tr>
+      <tbody>
+        {{#each cycleTimeData}}
         <tr>
-          <th>Process Step Name</th>
-          <th>Resource Requirement</th>
-          <th>Total Jobs Processed</th>
-          <th>Total Process Time (hrs)</th>
-          <th>Total Wait Time (hrs)</th>
-          <th>Avg. Process Time (hrs)</th>
-          <th>Avg. Wait Time (hrs)</th>
-          <th>Avg. Cycle Time (hrs)</th>
-          <th>CoV Arrivals</th>
-          <th>CoV Departures</th>
+          <td>{{this.stepname}}</td>
+          <td>{{this.resourceRequirement}}</td>
+          <td>{{this.totalJobsProcessed}}</td>
+          <td>{{this.totalProcessTime}}</td>
+          <td>{{this.totalWaitTime}}</td>
+          <td>{{this.avgProcessTime}}</td>
+          <td>{{this.avgWaitTime}}</td>
+          <td>{{this.avgCycleTime}}</td>
+          <td>{{this.CoVarrivals}}</td>
+          <td>{{this.CoVdepartures}}</td>
+          <!--property value here-->
         </tr>
-    <tbody>
-      {{#each cycleTimeData}}
-      <tr>
-        <td>{{this.stepname}}</td>
-        <td>{{this.resourceRequirement}}</td>
-        <td>{{this.totalJobsProcessed}}</td>
-        <td>{{this.totalProcessTime}}</td>
-        <td>{{this.totalWaitTime}}</td>
-        <td>{{this.avgProcessTime}}</td>
-        <td>{{this.avgWaitTime}}</td>
-        <td>{{this.avgCycleTime}}</td>
-        <td>{{this.CoVarrivals}}</td>
-        <td>{{this.CoVdepartures}}</td>
-        <!--property value here-->
-      </tr>
-      {{/each}}
-    </tbody>
-    </table>
+        {{/each}}
+      </tbody>
+      </table>
+      </div>
     </div>
   </div>
 </div>
