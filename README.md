@@ -33,10 +33,8 @@ NOTE: This project is referenced on my portfolio page at [my portfolio](https://
 The purpose of this project was to create a web-based simulation capability so that users can run the ExtendSim simulation without having to install it on their computers.
 
 ### Getting Started
-To use the ExtendSim web application, go to the Heruko link: https://extendsim-webapp.herokuapp.com/. Use admin as the username and model as the password in the login page. After logging in, the scenario inputs page will appear. Type any name for your scenario and use the 4 text files 
+To use the ExtendSim web application, go to the Heruko link: https://extendsim-webapp.herokuapp.com/. Use admin as the username and model as the password in the login page. After logging in, the scenario inputs page will appear. Type any name for your scenario and use the 4 text files located in the input files folder in my project on GitHub https://github.com/phtag/ExtendSim-WebApp.git
 
-From the home page, click on the "Go to survey" button. This takes you to the survey page. Enter your name and a link to a photo of yourself and answer all of the 10 survey questions. When finished, click the "submit" button and the Friends-Finder application will display the name and a photo of the closest matching friend.
+Once you have setup the scenario inputs, click the "Submit simulation scenario" button. Observe the status of the simulation. When it completes, click on the "Show scenario results" button to view a table of cycle-time data for the 10 process steps being represented in the simulation model.
 
-You can also click on the link in the footer of the page to view a list of all friends on the site and how they answered their survey questions.
-
-This project is maintained by Peter Tag
+This project is maintained by Peter H. Tag
