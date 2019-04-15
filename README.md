@@ -21,7 +21,7 @@ The scenarion inputs page is where the user configures the scenario that will be
 - Specify a scenario name
 - Drag and drop input files into the drop zone
 ![Inputs page Screenshot](/images/ExtendSimWebAppScenarioInputsPage.jpeg)
-After completing the above two steps, a submit simulation button will appear for submitting the configured scenarion. When the submit button is clicked, the input files will be pushed to the ExtendSim server and copied to a folder from which the scenario will be run. The user will be informed when the scenario has completed its run and presented with a button to click to view simulation results
+After completing the above two steps, a submit simulation button will appear for submitting the configured scenario. When the submit button is clicked, the input files will be pushed to the ExtendSim server and copied to a folder from which the scenario will be run. The user will be informed when the scenario has completed its run and presented with a button to click to view simulation results
 
 ### Scenario Results Page
 ![Inputs page Screenshot](/images/ExtendSimWebAppScenarioResultsPage.jpeg)
