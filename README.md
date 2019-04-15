@@ -11,11 +11,11 @@ are processed by the ExtendSim application. A new server was created using Expre
 
 The architecture consists of a web-based client-side interface where users create simulation scenarios to test how a system they are analyzing will perform under different circumstances. These scenarios are submitted from the browser to the Node.js server and passed on to the ExtendSim server. The results of the simulation run are stored in a MySQL database and are available for review by the user in the browser.
 
-### Home Page of the ExtendSim Web Simulation
+### Login Page of the ExtendSim Web Simulation
 ![Home page Screenshot](/images/ExtendSimWebAppLoginPage.jpeg)
 
-### Survey Page of Friend-Finder
-![Survey Screenshot](/images/Friends-Finder-Survey-screenShot.jpg)
+### Scenario Inputs Page
+![Survey Screenshot](/images/ExtendSimWebAppScenarioInputsPage.jpeg)
 
 NOTE: This project is referenced on my portfolio page at [my portfolio](https://phtag.github.io/Updated-portfolio/)
 
