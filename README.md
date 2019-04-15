@@ -5,20 +5,14 @@ Project @
 
 ### Overview
 This project demonstrates the beginning stages of a full-stack solution for a software product that is being developed to provide customers
-of Imagine That, Inc. with the capability to remotely run ExtendSim simulations on a server using a web page. The ExtendSim ASP license is a 
-simulation product that is installed on a server in the backend and is serviced by a self-hosting server application. The self-hosting 
+of Imagine That, Inc. with the capability to remotely run ExtendSim simulations on a server from a browser. This project uses the ExtendSim ASP product which is installed on a server and is serviced by a self-hosting server application. The self-hosting 
 server application provides a collection of APIs for exchanging data between clients and the ExtendSim server and executing commands that
-are processed by the ExtendSim application. This psimulation ExtendSim Web-Based Simulation
-This project uses Node.js and Express to create a server application to host users searching for friends that match their preferences. It provides a web-based frontend where users can fill out their name, provide a picture of themselves and answer a survey of questions and submit this information to search for the friend that most closely matches their survery question answers. After submitting their information, users are provided with the name and picture of the friend most closely matching their preferences.
+are processed by the ExtendSim application. A new server was created using Express and Node.js to directly service all client-side interactions from a browser and convert these interactions to API calls that are made to the self-hosting service application on the ExtendSim server.
 
-The server code is implemented in node.js using Express. The server services both html and api routes. The html routes send html files to the client browser based on user actions.
+The architecture consists of a web-based client-side interface where users create simulation scenarios to test how a system they are analyzing will perform under different circumstances. These scenarios are submitted from the browser to the Node.js server and passed on to the ExtendSim server. The results of the simulation run are stored in a MySQL database and are available for review by the user in the browser.
 
-The api serves routes for:
-* getting a JSON formatted list of all possible friends on the site
-* posting information about the current user
-
-### Home Page of Friend-Finder
-![Home page Screenshot](/images/Friends-Finder-HomePage-screenShot.jpg)
+### Home Page of the ExtendSim Web Simulation
+![Home page Screenshot](/images/ExtendSimWebAppLoginPage.jpeg)
 
 ### Survey Page of Friend-Finder
 ![Survey Screenshot](/images/Friends-Finder-Survey-screenShot.jpg)
