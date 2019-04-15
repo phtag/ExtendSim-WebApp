@@ -13,21 +13,27 @@ The architecture consists of a web-based client-side interface where users creat
 
 ### Login Page of the ExtendSim Web Simulation
 The starting point for a user session is the login. The user provides a username and password to login to the ExtendSim server. This is required to determine which simulation models the user has access to on the server. For this demonstration, the user is not provided with an ability to select which model they want to run a simulation for, but a future version will provide this capability. 
-![Home page Screenshot](/images/ExtendSimWebAppLoginPage.jpeg)
+![Login page Screenshot](/images/ExtendSimWebAppLoginPage.jpeg)
 
 ### Scenario Inputs Page
 The scenarion inputs page is where the user configures the scenario that will be submitted to the ExtendSim server. Currently, this is done as a two step process:
 - Specify a scenario name
 - Drag and drop input files into the drop zone
-![Survey Screenshot](/images/ExtendSimWebAppScenarioInputsPage.jpeg)
+![Inputs page Screenshot](/images/ExtendSimWebAppScenarioInputsPage.jpeg)
+After completing the above two steps, a submit simulation button will appear for submitting the configured scenarion. When the submit button is clicked, the input files will be pushed to the ExtendSim server and copied to a folder from which the scenario will be run. The user will be informed when the scenario has completed its run and presented with a button to click to view simulation results
+
+### Scenario Results Page
+![Inputs page Screenshot](/images/ExtendSimWebAppScenarioResultsPage.jpeg)
+
+The next phase of this project will greatly expand the reports page by providing users with several different reports at the detailed and summary levels and charting of results.
 
 NOTE: This project is referenced on my portfolio page at [my portfolio](https://phtag.github.io/Updated-portfolio/)
 
 ### Purpose
-The purpose of this assignment is to learn how to create a node.js server application using Express that services different routes from a client. In particular, the server services both GET and POST requests from clients as well as providing different routes for sending web pages to the client.
+The purpose of this project was to create a web-based simulation capability so that users can run the ExtendSim simulation without having to install it on their computers.
 
 ### Getting Started
-To use the Friend Finder application, go to the Heruko link: https://sleepy-temple-45120.herokuapp.com/
+To use the ExtendSim web application, go to the Heruko link: https://extendsim-webapp.herokuapp.com/. Use admin as the username and model as the password in the login page. After logging in, the scenario inputs page will appear. Type any name for your scenario and use the 4 text files 
 
 From the home page, click on the "Go to survey" button. This takes you to the survey page. Enter your name and a link to a photo of yourself and answer all of the 10 survey questions. When finished, click the "submit" button and the Friends-Finder application will display the name and a photo of the closest matching friend.
 
