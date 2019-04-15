@@ -12,9 +12,13 @@ are processed by the ExtendSim application. A new server was created using Expre
 The architecture consists of a web-based client-side interface where users create simulation scenarios to test how a system they are analyzing will perform under different circumstances. These scenarios are submitted from the browser to the Node.js server and passed on to the ExtendSim server. The results of the simulation run are stored in a MySQL database and are available for review by the user in the browser.
 
 ### Login Page of the ExtendSim Web Simulation
+The starting point for a user session is the login. The user provides a username and password to login to the ExtendSim server. This is required to determine which simulation models the user has access to on the server. For this demonstration, the user is not provided with an ability to select which model they want to run a simulation for, but a future version will provide this capability. 
 ![Home page Screenshot](/images/ExtendSimWebAppLoginPage.jpeg)
 
 ### Scenario Inputs Page
+The scenarion inputs page is where the user configures the scenario that will be submitted to the ExtendSim server. Currently, this is done as a two step process:
+- Specify a scenario name
+- Drag and drop input files into the drop zone
 ![Survey Screenshot](/images/ExtendSimWebAppScenarioInputsPage.jpeg)
 
 NOTE: This project is referenced on my portfolio page at [my portfolio](https://phtag.github.io/Updated-portfolio/)
